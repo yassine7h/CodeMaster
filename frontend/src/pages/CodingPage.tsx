@@ -1,8 +1,27 @@
+import React from "react";
 import CodeEditor from "../components/CodeEditor";
-import TerminalController from "../components/TerminalController";
+import Console from "../components/Console";
 import Split from "react-split";
 
+interface ConsoleMethods {
+   emptyConsole: () => void;
+   appendToConsole: (line: string) => void;
+}
+
 export default function CodingPage() {
+   const consoleRef = React.useRef<ConsoleMethods>();
+
+   const emptyConsole = () => {
+      if (consoleRef.current) {
+         consoleRef.current.emptyConsole();
+      }
+   };
+   const appendToConsole = (line: string) => {
+      if (consoleRef.current) {
+         consoleRef.current.appendToConsole(line);
+      }
+   };
+
    return (
       <div className="w-full h-full grid grid-cols-2 grid-rows-1">
          <div className="row-span-1 col-span-1">
@@ -19,10 +38,10 @@ export default function CodingPage() {
                }}
             >
                <div className="flex-grow flex">
-                  <CodeEditor />
+                  <CodeEditor emptyConsole={emptyConsole} appendToConsole={appendToConsole} />
                </div>
                <div className="flex-grow flex">
-                  <TerminalController />
+                  <Console ref={consoleRef} />
                </div>
             </Split>
          </div>
