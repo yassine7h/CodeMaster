@@ -33,7 +33,7 @@ export default function CodeEditor({ emptyConsole, appendToConsole }: any) {
    };
    const runCode = async () => {
       try {
-         const response = await axios.post("http://localhost:8000/executer/python/", {
+         const response = await axios.post("http://localhost:8000/submit", {
             code: codeValue,
          });
          console.log(response.data);
