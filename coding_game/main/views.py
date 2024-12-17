@@ -32,18 +32,36 @@ class GroupViewSet(viewsets.ModelViewSet):
 
 @api_view(['POST'])
 def submit(request):
-    args = "1 2\n3 4"
+    args_list = [[1, 2], [1000, 100]]
+    results = [3, 1100]
+    args_list = "\n".join([" ".join(str(args)) for args in args_list])
     code = request.data["code"]
     # command = ["python", "-c", request.data["code"]]
-    command = ["docker", "run", "--rm", "exec_code", code, args]
+    command = ["docker", "run", "--rm", "exec_code", code, args_list]
     res = dict()
-    try:
-        output = run(command, input=args, check=True, capture_output=True, text=True)
-        res["stdout"] = output.stdout
-    except CalledProcessError as e:
-        res["stderr"] = e.stderr
+    output = run(command, input=args_list, check=True, capture_output=True, text=True)
+    res["stdout"] = output.stdout
+
     logger.debug(msg=res)
-    return Response(res, status=status.HTTP_200_OK)
+    return Response({
+  "stdout": "Sample output",
+  "stderr": "",
+  "exit_code": 0,
+  "tests": [
+    {
+      "input": "2 3",
+      "expected_output": "5",
+      "actual_output": "5",
+      "status": "pass"
+    },
+    {
+      "input": "4 5",
+      "expected_output": "9",
+      "actual_output": "10",
+      "status": "fail"
+    }
+  ]
+}, status=status.HTTP_200_OK)
 
 
 def home(request):
