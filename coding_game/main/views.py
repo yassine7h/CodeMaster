@@ -1,3 +1,5 @@
+import logging
+
 from django.http import HttpResponse
 from django.contrib.auth.models import Group, User
 from rest_framework import permissions, viewsets, status
@@ -5,6 +7,9 @@ from rest_framework.response import Response
 from tutorial.quickstart.serializers import GroupSerializer, UserSerializer
 from subprocess import run, CalledProcessError
 from rest_framework.decorators import api_view
+
+
+logger = logging.getLogger(__name__)
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -37,6 +42,7 @@ def submit(request):
         res["stdout"] = output.stdout
     except CalledProcessError as e:
         res["stderr"] = e.stderr
+    logger.debug(msg=res)
     return Response(res, status=status.HTTP_200_OK)
 
 

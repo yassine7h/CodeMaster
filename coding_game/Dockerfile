@@ -6,4 +6,4 @@ COPY script.sh /
 RUN chmod a+x /script.sh
 
 ENTRYPOINT ["/script.sh"]
-CMD ["print('Hello')","sss"]
+CMD ["print('No code was parsed')",""]
