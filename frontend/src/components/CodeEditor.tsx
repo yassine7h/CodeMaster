@@ -50,8 +50,6 @@ export default function CodeEditor({ emptyConsole, appendToConsole, appendTestRe
          console.log("Test Results:", testResults); // Debugging the test results
          appendTestResults(testResults); // Pass the test results to the Console component
 
-         // Program exit code (successful or failure)
-         appendToConsole(`Program exited with code ${response.data.exit_code}.`);
       } catch (error) {
          emptyConsole();
          appendToConsole("Network Connection Error");
