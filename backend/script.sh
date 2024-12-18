@@ -5,7 +5,7 @@ import sys
 import traceback
 from contextlib import redirect_stdout, redirect_stderr
 from io import StringIO
-inputs = sys.stdin.read().strip().split('\\n')  # Read all test case inputs
+inputs = sys.stdin.read().strip().split(';')  # Read all test case inputs
 inputs = [line.split() for line in inputs]
 res = list()
 o = StringIO()

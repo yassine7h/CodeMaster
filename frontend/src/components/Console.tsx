@@ -41,20 +41,20 @@ const Console = forwardRef((props, ref) => {
                   <div
                      key={index}
                      className={`bg-gray-700 p-4 mb-4 rounded-lg cursor-pointer ${
-                        test.status === "pass"
+                        test.status
                            ? "border-2 border-green-500"
                            : "border-2 border-red-500"
                      }`}
                      onClick={() => handleCardClick(index)} // Handle click to expand
                   >
                      <h4 className="text-lg font-semibold">
-                        Test {index + 1} - {test.status === "pass" ? "Passed" : "Failed"}
+                        Test {index + 1} - {test.status ? "Passed" : "Failed"}
                      </h4>
 
                      {/* Minimal Information (only visible when not expanded) */}
                      {expandedTest !== index && (
                         <div className="mt-2 text-sm">
-                           <strong>Status: </strong>{test.status === "pass" ? "Passed" : "Failed"}
+                           <strong>Status: </strong>{test.status ? "Passed" : "Failed"}
                         </div>
                      )}
 

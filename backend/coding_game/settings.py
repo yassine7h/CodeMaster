@@ -151,7 +151,7 @@ LOGGING = {
         "console": {
             "level": "DEBUG",
             'class': 'rich.logging.RichHandler',
-            'rich_tracebacks': True,
+            'rich_tracebacks': False,
             "formatter": "verbose",
         },
     },
