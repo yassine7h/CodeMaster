@@ -65,3 +65,34 @@ def submit(request):
 def home(request):
     print(request.readlines())
     return HttpResponse("Hello, world. You're at the polls index.")
+
+@api_view(['POST'])
+def submit(request):
+    args_list = ["1 2", "1000 100", "0 99"]
+    results = ["3", "1100", "99"]
+    logger.debug(args_list)
+    code = request.data["code"]
+    # command = ["python", "-c", request.data["code"]]
+    command = ["docker", "run", "--rm", "exec_code", code, ";".join(args_list)]
+    output = run(command, check=True, capture_output=True, text=True)
+    res = ast.literal_eval(output.stdout.strip())
+    tests_res = []
+    c = True
+    logger.debug(len(args_list))
+    for i in range(len(args_list)):
+        final_out = res[i]["error"] if res[i]["error"] else res[i]["output"]
+        tests_res.append({
+            "input": args_list[i],
+            "expected_output": results[i],
+            "actual_output": final_out,
+            "status": final_out == results[i]
+        })
+        if final_out != results[i]:
+            c = False
+    res = {
+        "stdout": c,
+        "stderr": c,
+        "tests": tests_res
+    }
+    logger.debug(msg=res)
+    return Response(res, status=status.HTTP_200_OK)
