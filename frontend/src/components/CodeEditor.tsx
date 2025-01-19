@@ -25,7 +25,7 @@ export default function CodeEditor({ emptyConsole, appendToConsole, appendTestRe
 
    const runCode = async () => {
       try {
-         const response = await axios.post("http://localhost:8000/submit", {
+         const response = await axios.post("http://localhost:8000/run_test_cases_python/python", {
             code: codeValue,
          });
 
