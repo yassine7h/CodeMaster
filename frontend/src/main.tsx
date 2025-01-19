@@ -1,75 +1,69 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { createBrowserRouter, NavLink, Outlet, RouterProvider } from "react-router-dom";
+import "./index.css";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import AuthPage from "./pages/AuthPage.tsx";
+import { SnackbarProvider } from "notistack";
+import { GlobalContextProvider } from "./contexts/GlobalContext.tsx";
+import ProtectedRoute from "./ProtectedRoute.tsx";
+import MyAccountPage from "./pages/MyAccountPage.tsx";
 import Home from "./pages/Home.tsx";
 import ProblemsPage from "./pages/ProblemsPage.tsx";
 import CodingPage from "./pages/CodingPage.tsx";
-import "./index.css";
-import { MainContextProvider } from "./contexts/MainContext.tsx";
-
-function Layout() {
-   return (
-      <div className="flex flex-col w-[100vw] h-[100vh]">
-         {/* Navigation Bar */}
-         <nav className="w-full flex items-center justify-between px-10 h-[60px] bg-green-600 text-white text-lg shadow-md z-50">
-            {/* Left: Logo */}
-            <div className="flex items-center gap-3">
-               <img src="/logo.png" alt="Logo" className="h-8" />
-               <span className="font-bold text-xl">CodeMaster</span>
-            </div>
-
-            {/* Center: Navigation Links */}
-            <div className="flex gap-10">
-               <NavLink to="/" className={({ isActive }) => (isActive ? "font-bold" : "hover:font-bold transition-colors duration-300")}>
-                  Home
-               </NavLink>
-               <NavLink to="/problems" className={({ isActive }) => (isActive ? "font-bold" : "hover:font-bold transition-colors duration-300")}>
-                  Problems
-               </NavLink>
-            </div>
-
-            {/* Right: Sign In and Sign Up Buttons */}
-            <div className="flex gap-4">
-               <button className="px-4 py-1 bg-gray-100 text-green-600 rounded hover:bg-gray-200 transition-colors duration-300">Sign In</button>
-               <button className="px-4 py-1 bg-white text-green-600 rounded border border-green-600 hover:bg-green-100 transition-colors duration-300">
-                  Sign Up
-               </button>
-            </div>
-         </nav>
-
-         {/* Page Content */}
-         <div className="flex-grow block overflow-y-scroll">
-            <Outlet />
-         </div>
-      </div>
-   );
-}
+import SolutionPage from "./pages/SolutionPage.tsx";
+import AdminAddProblemPage from "./pages/AdminAddProblemsPage.tsx";
+import Layout from "./layouts/Layout.tsx";
 
 const router = createBrowserRouter([
    {
       path: "/",
-      element: <Layout />,
-      children: [
-         {
-            path: "/",
-            element: <Home />,
-         },
-         {
-            path: "problems",
-            element: <ProblemsPage />,
-         },
-         {
-            path: "problems/:problemId",
-            element: <CodingPage />,
-         },
-      ],
+      element: <Layout><Home /></Layout>,
+   },
+   {
+      path: "/auth/signin",
+      element: <Layout><AuthPage isLogin={true} /></Layout>,
+   },
+   {
+      path: "/auth/signup",
+      element: <Layout><AuthPage isLogin={false} /></Layout>,
+   },
+   {
+      path: "/problems",
+      element: <Layout><ProblemsPage /></Layout>,
+   },
+   {
+      path: "/problems/:problemId",
+      element: <Layout><CodingPage /></Layout>,
+   },
+   {
+      path: "/solutions/:solutionId",
+      element: <Layout><SolutionPage /></Layout>,
+   },
+   {
+      path: "/admin/addproblem",
+      element: <Layout><AdminAddProblemPage/></Layout>,
+   },
+   {
+      path: "/myaccount",
+      element: <ProtectedRoute roles={["ADMIN", "USER", "SUPADMIN"]} component={MyAccountPage} />,
+   },
+   {
+      path: "/unauthorized",
+      element: <Layout><h1 className="text-xl font-semibold p-3">You are not authorized to view this page</h1></Layout>,
+   },
+   {
+      path: "*",
+      element: <Layout><h1 className="text-xl font-semibold p-3">Page Not Found</h1></Layout>,
    },
 ]);
 
 createRoot(document.getElementById("root")!).render(
    <StrictMode>
-      <MainContextProvider>
-         <RouterProvider router={router} />
-      </MainContextProvider>
+      <SnackbarProvider maxSnack={3}>
+         <GlobalContextProvider>
+            <RouterProvider router={router} />
+         </GlobalContextProvider>
+      </SnackbarProvider>
    </StrictMode>
 );
+
