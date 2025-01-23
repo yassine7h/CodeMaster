@@ -3,7 +3,6 @@ import useLogout from "../hooks/logoutHandler";
 import { useState, useEffect, useRef } from "react";
 import { BsPersonCircle } from "react-icons/bs";
 import { useGlobalContext } from "../contexts/GlobalContext";
-import "../../public/styles/main.css";
 
 export default function Layout({ children }: React.PropsWithChildren<{}>) {
    const { value } = useGlobalContext();
@@ -37,7 +36,7 @@ export default function Layout({ children }: React.PropsWithChildren<{}>) {
    }, []);
 
    return (
-      <div className="bg-gray-100 flex flex-col min-h-screen">
+      <div className="bg-gray-100 flex flex-col overflow-hidden h-screen">
          <nav className="bg-black text-white py-4 px-6 flex justify-between items-center shadow-lg">
             <div className="flex items-center">
                <div className="text-xl font-bold">CodeMaster</div>
@@ -64,25 +63,16 @@ export default function Layout({ children }: React.PropsWithChildren<{}>) {
                {/* User Dropdown */}
                {value.user ? (
                   <div className="relative" ref={dropdownRef}>
-                     <button
-                        onClick={toggleDropdown}
-                        className="flex items-center gap-2 hover:bg-blue-400 px-4 py-2 rounded-md font-semibold"
-                     >
+                     <button onClick={toggleDropdown} className="flex items-center gap-2 hover:bg-blue-400 px-4 py-2 rounded-md font-semibold">
                         <BsPersonCircle size={20} />
                         {value.user.firstname}
                      </button>
                      {dropdownOpen && (
                         <div className="absolute right-0 mt-2 bg-white text-black shadow-lg rounded-md py-2 z-50">
-                           <Link
-                              to="/myaccount"
-                              className="block px-4 py-2 hover:bg-gray-100"
-                           >
+                           <Link to="/myaccount" className="block px-4 py-2 hover:bg-gray-100">
                               My Account
                            </Link>
-                           <button
-                              onClick={logoutHandler}
-                              className="block w-full text-left px-4 py-2 hover:bg-gray-100"
-                           >
+                           <button onClick={logoutHandler} className="block w-full text-left px-4 py-2 hover:bg-gray-100">
                               Logout
                            </button>
                         </div>
@@ -108,14 +98,7 @@ export default function Layout({ children }: React.PropsWithChildren<{}>) {
             </div>
          </nav>
 
-         {/* Main Content */}
-         <main className="flex-grow">{children}</main>
-
-         {/* Footer */}
-         <footer className="bg-black text-white py-4 text-center">
-            &copy; 2025 CodeMaster. All rights reserved.
-         </footer>
+         <main className="flex-1 overflow-auto">{children}</main>
       </div>
    );
 }
-

@@ -1,0 +1,6 @@
+footer {
+    display: none !important;
+}
+.wrapper > * {
+    margin: 0 !important;
+}

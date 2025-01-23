@@ -19,3 +19,4 @@ class TestCase(models.Model):
     arguments = models.TextField()
     output = models.TextField()
     problem = models.ForeignKey(Problem, on_delete=models.CASCADE)
+

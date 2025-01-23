@@ -13,6 +13,7 @@ import CodingPage from "./pages/CodingPage.tsx";
 import SolutionPage from "./pages/SolutionPage.tsx";
 import AdminAddProblemPage from "./pages/AdminAddProblemsPage.tsx";
 import Layout from "./layouts/Layout.tsx";
+import SuperAdmin from "./pages/SuperAdmin.tsx";
 
 const router = createBrowserRouter([
    {
@@ -46,6 +47,10 @@ const router = createBrowserRouter([
    {
       path: "/myaccount",
       element: <ProtectedRoute roles={["ADMIN", "USER", "SUPADMIN"]} component={MyAccountPage} />,
+   },
+   {
+      path: "/superadmin",
+      element: <SuperAdmin/>,
    },
    {
       path: "/unauthorized",

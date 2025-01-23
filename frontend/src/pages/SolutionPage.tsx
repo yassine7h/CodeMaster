@@ -1,6 +1,6 @@
 import React from "react";
 import CodeEditor from "../components/CodeEditor";
-import Console from "../components/Console";
+import Console from "../components/TestsResults";
 import PerformanceStats from "../components/PerformanceStats";
 import Split from "react-split";
 
@@ -39,25 +39,18 @@ export default function SolutionPage() {
                   return gutterElement as HTMLElement;
                }}
             >
-               <div className="flex-grow flex">
-                  <CodeEditor
-                     emptyConsole={emptyConsole}
-                     appendToConsole={appendToConsole}
-                     setPerformance={setPerformance}
-                  />
+               <div className="">
+                  <CodeEditor emptyConsole={emptyConsole} appendToConsole={appendToConsole} setPerformance={setPerformance} />
                </div>
-               <div className="flex-grow flex">
+               <div className="">
                   <Console ref={consoleRef} />
                </div>
             </Split>
          </div>
-         <div className="w-full h-full row-span-1 col-span-1 flex flex-col items-center justify-start p-4">
+         {/* <div className="w-full h-full row-span-1 col-span-1 flex flex-col items-center justify-start p-4">
             <div className="mb-4">problem description, test cases</div>
-            {performance && (
-               <PerformanceStats runtime={performance.runtime} memoryUsed={performance.memoryUsed} />
-            )}
-         </div>
+            {performance && <PerformanceStats runtime={performance.runtime} memoryUsed={performance.memoryUsed} />}
+         </div> */}
       </div>
    );
 }
-
