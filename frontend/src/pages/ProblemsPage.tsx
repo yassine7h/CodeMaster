@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
+type Difficulty = "Easy" | "Medium" | "Hard";
+
 // Définir le type Problem
 interface Problem {
    id: number;
    title: string;
    acceptance: number;
-   difficulty: string;
+   difficulty: Difficulty;
 }
 
 const problems: Problem[] = [

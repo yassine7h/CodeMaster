@@ -25,4 +25,6 @@ dist-ssr
 
 # added by me
 .venv
+__pycache__/
+
 

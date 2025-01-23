@@ -20,6 +20,7 @@ dist-ssr
 *.sln
 *.sw?
 .idea/
+backend/.venv
 backend/executor/__pycache__/
 backend/executor/migrations/
 backend/test_cases_runner/_pycache__/
