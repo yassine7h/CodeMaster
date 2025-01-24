@@ -1,39 +1,16 @@
 import React from "react";
-import CodeEditor from "../components/CodeEditor"; 
-import Console from "../components/Console"; 
-import PerformanceStats from "../components/PerformanceStats"; 
-import ProblemDescription from "../components/ProblemDescription"; 
-import Split from "react-split"; 
+import CodeEditor from "../components/CodeEditor";
+import Console from "../components/Console";
+import Split from "react-split";
 
 interface ConsoleMethods {
    emptyConsole: () => void;
    appendToConsole: (line: string) => void;
+   appendTestResults: (testResults: any[]) => void;
 }
 
 export default function CodingPage() {
-   const consoleRef = React.useRef<ConsoleMethods>();
-   const [performance, setPerformance] = React.useState<{ runtime: number; memoryUsed: number } | null>(null);
-
-   const problemData = {
-      title: "2425. Bitwise XOR of All Pairings",
-      description:
-         "You are given two 0-indexed arrays, nums1 and nums2, consisting of non-negative integers. There exists another array, nums3, which contains the bitwise XOR of all pairings of integers between nums1 and nums2 (every integer in nums1 is paired with every integer in nums2 exactly once). Return the bitwise XOR of all integers in nums3.",
-      examples: [
-         {
-            input: "nums1 = [2,1,3], nums2 = [10,2,5,0]",
-            output: "13",
-            explanation:
-               "A possible nums3 array is [8,0,7,2,11,3,4,1,9,1,6,3]. The bitwise XOR of all these numbers is 13, so we return 13.",
-         },
-         {
-            input: "nums1 = [1,2], nums2 = [3,4]",
-            output: "0",
-            explanation:
-               "All possible pairs of bitwise XORs are nums1[0] ^ nums2[0], nums1[0] ^ nums2[1], and nums1[1] ^ nums2[0]. Thus, one possible nums3 array is [2,5,1,6]. 2 ^ 5 ^ 1 ^ 6 = 0, so we return 0.",
-         },
-
-      ],
-   };
+   const consoleRef = React.useRef<ConsoleMethods>(null);
 
    const emptyConsole = () => {
       if (consoleRef.current) {
@@ -47,23 +24,30 @@ export default function CodingPage() {
       }
    };
 
-   const handleRunCode = () => {
-      appendToConsole("Running code...");
-      appendToConsole("Test case 1: nums1 = [2,1,3], nums2 = [10,2,5,0], Output = 13");
-      appendToConsole("Test case 2: nums1 = [1,2], nums2 = [3,4], Output = 0");
-      setPerformance({ runtime: 200, memoryUsed: 50 });
+   const appendTestResults = (testResults: any[]) => {
+      if (consoleRef.current) {
+         consoleRef.current.appendTestResults(testResults);
+      }
    };
 
+   // Problem description parts as variables (content only)
+   const problemStatement = "Complete the function solveMeFirst to compute the sum of two integers.";
+   const exampleContent = "If the inputs are a = 2 and b = 3, the sum is 5.";
+   const functionDescriptionContent =
+      "Complete the solveMeFirst function in the editor below.\n" +
+      "solveMeFirst has the following parameters:\n" +
+      "- int a: the first value\n" +
+      "- int b: the second value\n" +
+      "Returns\n" +
+      "+ int: the sum of a and b";
+   const inputFormatContent = "Two space-separated integers a and b.";
+   const outputFormatContent = "Print the sum of a and b as a single integer.";
+   const sampleInputContent = "a = 2\nb = 3";
+   const sampleOutputContent = "5";
+   const explanationContent = "We calculate the sum: 2 + 3 = 5.";
+
    return (
-      <div className=" bg-black text-800 text-white w-full h-full grid grid-cols-2 grid-rows-1 gap-4 p-6">
-            <ProblemDescription
-               title={problemData.title}
-               description={problemData.description}
-               examples={problemData.examples}
-            />
-            {performance && (
-               <PerformanceStats runtime={performance.runtime} memoryUsed={performance.memoryUsed} />
-            )}
+      <div className="w-full h-full overflow-y-clip grid grid-cols-2 grid-rows-1">
          <div className="row-span-1 col-span-1">
             <Split
                className="flex flex-col w-full h-full"
@@ -81,7 +65,7 @@ export default function CodingPage() {
                   <CodeEditor
                      emptyConsole={emptyConsole}
                      appendToConsole={appendToConsole}
-                     setPerformance={setPerformance}
+                     appendTestResults={appendTestResults} // Pass the appendTestResults function
                   />
                </div>
                <div className="flex-grow flex">
@@ -89,7 +73,33 @@ export default function CodingPage() {
                </div>
             </Split>
          </div>
+
+         {/* Problem Description Section */}
+         <div className="w-full h-full row-span-1 col-span-1 p-4 overflow-y-auto bg-gray-100">
+            <h2 className="text-xl font-semibold mb-4">Problem Description</h2>
+            <p className="mb-2">{problemStatement}</p>
+
+            <h3 className="text-lg font-medium mt-4 mb-2">Example</h3>
+            <p>{exampleContent}</p>
+
+            <h3 className="text-lg font-medium mt-4 mb-2">Function Description</h3>
+            <div style={{ whiteSpace: "pre-wrap" }}>{functionDescriptionContent}</div>
+
+            <h3 className="text-lg font-medium mt-4 mb-2">Input Format</h3>
+            <p>{inputFormatContent}</p>
+
+            <h3 className="text-lg font-medium mt-4 mb-2">Output Format</h3>
+            <p>{outputFormatContent}</p>
+
+            <h3 className="text-lg font-medium mt-4 mb-2">Sample Input</h3>
+            <pre className="bg-gray-200 p-2 rounded">{sampleInputContent}</pre>
+
+            <h3 className="text-lg font-medium mt-4 mb-2">Sample Output</h3>
+            <pre className="bg-gray-200 p-2 rounded">{sampleOutputContent}</pre>
+
+            <h3 className="text-lg font-medium mt-4 mb-2">Explanation</h3>
+            <p>{explanationContent}</p>
+         </div>
       </div>
    );
 }
-

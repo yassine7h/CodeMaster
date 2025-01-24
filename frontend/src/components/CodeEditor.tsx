@@ -2,25 +2,21 @@ import Editor from "@monaco-editor/react";
 import React from "react";
 import axios from "axios";
 
-const defaultValue = `def solutionFunction():
-   print("Hello World!")
-solutionFunction()
+const defaultValue = `def solveMeFirst(a,b):
+   return a + b
+
+num1 = int(input())
+num2 = int(input())
+res = solveMeFirst(num1,num2)
+print(res)
 `;
 
 const options = {
    minimap: { enabled: false },
    scrollBeyondLastLine: false,
-   theme: "vs-dark",
-   wordWrap: "on",
 };
 
-interface CodeEditorProps {
-   emptyConsole: () => void;
-   appendToConsole: (line: string) => void;
-   setPerformance: (performance: { runtime: number; memoryUsed: number } | null) => void;
-}
-
-export default function CodeEditor({ emptyConsole, appendToConsole, setPerformance }: CodeEditorProps) {
+export default function CodeEditor({ emptyConsole, appendToConsole, appendTestResults }: any) {
    const [codeValue, setCodeValue] = React.useState<string>(defaultValue);
 
    const handleEditorChange = (value: any) => {
@@ -29,64 +25,59 @@ export default function CodeEditor({ emptyConsole, appendToConsole, setPerforman
 
    const runCode = async () => {
       try {
-         emptyConsole();
-         appendToConsole("Executing code...");
-         setPerformance(null);
-
-         const response = await axios.post("http://localhost:8000/executer/python/", {
+         const response = await axios.post("http://localhost:8000/run_test_cases_python/python", {
             code: codeValue,
          });
 
-         const { stdout, stderr, exit_code } = response.data;
-         appendToConsole(stdout || "No output.");
-         appendToConsole(stderr || "");
-         appendToConsole(`Program exited with code ${exit_code}.`);
+         // Clear the console before displaying new output
+         emptyConsole();
 
-         if (response.data.performance) {
-            setPerformance({
-               runtime: response.data.performance.execution_time,
-               memoryUsed: response.data.performance.memory_used,
-            });
+         // Debugging logs to verify the response structure
+         console.log("Response from server:", response.data);
+
+         // If stdout is returned, display it
+         if (response.data.stdout) {
+            appendToConsole(`Output: ${response.data.stdout}`);
          }
+
+         // If stderr is returned (error), display it
+         if (response.data.stderr) {
+            appendToConsole(`Error: ${response.data.stderr}`);
+         }
+
+         // If test results are available, display them
+         const testResults = response.data.tests || [];
+         console.log("Test Results:", testResults); // Debugging the test results
+         appendTestResults(testResults); // Pass the test results to the Console component
+
       } catch (error) {
          emptyConsole();
-         appendToConsole("Error: Unable to connect to the server.");
+         appendToConsole("Network Connection Error");
          console.error("Error:", error);
       }
    };
 
-   const resetEditor = () => {
-      setCodeValue(defaultValue);
-   };
-
    return (
-      <div className="h-full w-full relative bg-[#262626] border-2 rounded-lg overflow-hidden">
+      <div className="h-full w-full border-2 relative">
          <div className="h-full w-full">
             <Editor
                className="rounded-md"
                options={options}
                height="100%"
                width="100%"
-               defaultLanguage="python"
-               value={codeValue}
+               defaultLanguage="python"  // Assuming Python as the language
+               defaultValue={defaultValue}
                onChange={handleEditorChange}
             />
          </div>
-         <div className="z-50 absolute bottom-0 right-0 p-3 space-x-2 bg-gray-800 w-full flex justify-end">
+         <div className="z-50 absolute bottom-0 right-0 p-3">
             <button
                onClick={runCode}
-               className="bg-green-600 px-4 py-2 rounded-lg text-white font-semibold hover:bg-green-700"
+               className="bg-green-600 px-3 py-2 rounded-lg text-white font-semibold flex items-center justify-center"
             >
                Run
-            </button>
-            <button
-               onClick={resetEditor}
-               className="bg-gray-600 px-4 py-2 rounded-lg text-white font-semibold hover:bg-gray-700"
-            >
-               Reset
             </button>
          </div>
       </div>
    );
 }
-

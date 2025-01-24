@@ -21,6 +21,7 @@ dist-ssr
 *.sw?
 .idea/
 backend/executor/__pycache__/
+backend/config/__pycache__/
 backend/executor/migrations/
 backend/test_cases_runner/_pycache__/
 backend/test_cases_runner/migrations/
