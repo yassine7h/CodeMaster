@@ -34,8 +34,8 @@ class TestCaseRunnerConfig(AppConfig):
         ]
         try:
             result = run(python_docker_image_build_command, check=True, capture_output=True, text=True)
-            logger.info("Docker Image for python build successful " + result.stdout)
+            logger.info("Docker Image for python test_cases runner build successful " + result.stdout)
             result = run(java_docker_image_build_command, check=True, capture_output=True, text=True)
-            logger.info("Docker Image for java build successful " + result.stdout)
+            logger.info("Docker Image for java test_cases runner build successful " + result.stdout)
         except Exception as e:
             logger.error("Docker build failed:" + str(e))

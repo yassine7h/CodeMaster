@@ -1,21 +1,21 @@
-import axios, { AxiosInstance, AxiosRequestConfig, InternalAxiosRequestConfig, AxiosResponse } from "axios";
+import axios, { AxiosInstance, AxiosRequestConfig, InternalAxiosRequestConfig, AxiosResponse } from 'axios';
 
 class HttpClient {
    private axiosInstance: AxiosInstance;
    private token: string | null;
 
    constructor(baseURL: string) {
-      this.token = localStorage.getItem("jwt_token");
+      this.token = localStorage.getItem('auth_token');
       this.axiosInstance = axios.create({
          baseURL,
          headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
          },
       });
       this.axiosInstance.interceptors.request.use(
          (config: InternalAxiosRequestConfig) => {
             if (this.token) {
-               config.headers.set("Authorization", `Bearer ${this.token}`);
+               config.headers.set('Authorization', `Token ${this.token}`);
             }
             return config;
          },
@@ -28,12 +28,12 @@ class HttpClient {
    }
    setToken(token: string): void {
       this.token = token;
-      localStorage.setItem("jwt_token", token);
+      localStorage.setItem('auth_token', token);
    }
 
    removeToken(): void {
       this.token = null;
-      localStorage.removeItem("jwt_token");
+      localStorage.removeItem('auth_token');
    }
 
    get<T>(url: string, config?: AxiosRequestConfig): Promise<AxiosResponse<T>> {

@@ -1,9 +1,8 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
 
-type Difficulty = "Easy" | "Medium" | "Hard";
+type Difficulty = 'Easy' | 'Medium' | 'Hard';
 
-// Définir le type Problem
 interface Problem {
    id: number;
    title: string;
@@ -14,40 +13,38 @@ interface Problem {
 const problems: Problem[] = [
    {
       id: 0,
-      title: "Bitwise XOR of All Pairings",
+      title: 'Bitwise XOR of All Pairings',
       acceptance: 64.4,
-      difficulty: "Hard",
+      difficulty: 'Hard',
    },
    {
       id: 1,
-      title: "Two Sum",
+      title: 'Two Sum',
       acceptance: 52.2,
-      difficulty: "Easy",
+      difficulty: 'Easy',
    },
    {
       id: 2,
-      title: "Add Two Numbers",
+      title: 'Add Two Numbers',
       acceptance: 44.1,
-      difficulty: "Medium",
+      difficulty: 'Medium',
    },
    {
       id: 3,
-      title: "Longest Substring Without Repeating Characters",
+      title: 'Longest Substring Without Repeating Characters',
       acceptance: 44.1,
-      difficulty: "Medium",
+      difficulty: 'Medium',
    },
 ];
 
-// Composant pour chaque ligne du problème
 const ProblemItem = ({ problem }: { problem: Problem }) => {
    const solutionLink = `/solutions/${problem.id}`;
    const problemLink = `/problems/${problem.id}`;
 
-   // Define colors for difficulty
    const difficultyClass = {
-      Easy: "text-green-400",
-      Medium: "text-orange-400",
-      Hard: "text-red-400",
+      Easy: 'text-green-400',
+      Medium: 'text-orange-400',
+      Hard: 'text-red-400',
    };
 
    return (
@@ -74,14 +71,14 @@ const ProblemItem = ({ problem }: { problem: Problem }) => {
 };
 
 export default function ProblemsPage() {
-   const [filterDifficulty, setFilterDifficulty] = useState<string>("All");
-   const [filterAcceptanceRange, setFilterAcceptanceRange] = useState<string>("All");
+   const [filterDifficulty, setFilterDifficulty] = useState<string>('All');
+   const [filterAcceptanceRange, setFilterAcceptanceRange] = useState<string>('All');
 
    const filteredProblems = problems.filter((problem) => {
-      const matchDifficulty = filterDifficulty === "All" || problem.difficulty === filterDifficulty;
+      const matchDifficulty = filterDifficulty === 'All' || problem.difficulty === filterDifficulty;
 
-      const [minAcceptance, maxAcceptance] = filterAcceptanceRange.split("-").map(Number);
-      const matchAcceptance = filterAcceptanceRange === "All" || (problem.acceptance >= minAcceptance && problem.acceptance <= maxAcceptance);
+      const [minAcceptance, maxAcceptance] = filterAcceptanceRange.split('-').map(Number);
+      const matchAcceptance = filterAcceptanceRange === 'All' || (problem.acceptance >= minAcceptance && problem.acceptance <= maxAcceptance);
 
       return matchDifficulty && matchAcceptance;
    });
@@ -92,7 +89,7 @@ export default function ProblemsPage() {
          <section className="mt-6">
             <h2 className="text-xl font-semibold mb-4">Study Plan</h2>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-               {["Top Interview 150", "LeetCode 75", "SQL 50"].map((title) => (
+               {['Top Interview 150', 'LeetCode 75', 'SQL 50'].map((title) => (
                   <div key={title} className="bg-gray-800 p-4 rounded-lg hover:shadow-lg">
                      <h3 className="font-bold text-lg">{title}</h3>
                      <p className="text-sm text-gray-400">Ace Coding Interview</p>
@@ -105,7 +102,7 @@ export default function ProblemsPage() {
          <section className="mt-6">
             <h2 className="text-xl font-semibold mb-4">Topics</h2>
             <div className="flex flex-wrap gap-4">
-               {["Arrays", "Strings", "Hash Tables", "Algorithms"].map((topic) => (
+               {['Arrays', 'Strings', 'Hash Tables', 'Algorithms'].map((topic) => (
                   <button key={topic} className="bg-gray-800 text-white px-4 py-2 rounded-md hover:bg-yellow-400 hover:text-black">
                      {topic}
                   </button>
@@ -117,11 +114,7 @@ export default function ProblemsPage() {
          <section className="mt-6 flex gap-4">
             <div className="flex items-center">
                <label className="mr-2 text-gray-400">Difficulty:</label>
-               <select
-                  value={filterDifficulty}
-                  onChange={(e) => setFilterDifficulty(e.target.value)}
-                  className="bg-gray-800 text-white px-4 py-2 rounded-md"
-               >
+               <select value={filterDifficulty} onChange={(e) => setFilterDifficulty(e.target.value)} className="bg-gray-800 text-white px-4 py-2 rounded-md">
                   <option value="All">All</option>
                   <option value="Easy">Easy</option>
                   <option value="Medium">Medium</option>
@@ -131,11 +124,7 @@ export default function ProblemsPage() {
 
             <div className="flex items-center">
                <label className="mr-2 text-gray-400">Acceptance Range:</label>
-               <select
-                  value={filterAcceptanceRange}
-                  onChange={(e) => setFilterAcceptanceRange(e.target.value)}
-                  className="bg-gray-800 text-white px-4 py-2 rounded-md"
-               >
+               <select value={filterAcceptanceRange} onChange={(e) => setFilterAcceptanceRange(e.target.value)} className="bg-gray-800 text-white px-4 py-2 rounded-md">
                   <option value="All">All</option>
                   <option value="0-10">0% - 10%</option>
                   <option value="10-20">10% - 20%</option>

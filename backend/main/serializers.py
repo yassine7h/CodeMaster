@@ -1,26 +1,16 @@
-from django.contrib.auth.models import Group, User
+import json
+
 from rest_framework import serializers
-from subprocess import run
+
+from .models import User
 
 
-class UserSerializer(serializers.HyperlinkedModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data['roles'] = json.loads(instance.roles)  # Parse the string into JSON
+        return data
+
     class Meta:
         model = User
-        fields = ['url', 'username', 'email', 'groups']
-
-
-class GroupSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = Group
-        fields = ['url', 'name']
-
-
-class CodeResultSerializer(serializers.Serializer):
-
-    def execute(self, payload):
-        command = ["python", "-c", payload]
-        output = run(command, check=True, capture_output=True, text=True)
-        if output.stdout is not None and output.stdout != "":
-            print(output.stdout)
-        if output.stderr is not None and output.stderr != "":
-            print(output.stderr)
+        fields = ['id', 'username', 'email', 'roles']

@@ -1,51 +1,32 @@
-import React, { forwardRef, useImperativeHandle, useState } from "react";
+import { useState } from 'react';
 
-const TestsResults = forwardRef((props, ref) => {
-   const consoleRef = React.useRef<HTMLDivElement>(null);
-   const [lines, setLines] = React.useState<string[]>([]);
-   const [testResults, setTestResults] = React.useState<any[]>([]);
-   const [expandedTest, setExpandedTest] = useState<number | null>(null); // State to handle expanded card
-
-   useImperativeHandle(ref, () => ({
-      emptyConsole() {
-         setLines([]);
-         setTestResults([]);
-      },
-      appendToConsole(line: string) {
-         setLines((prevLines) => [...prevLines, line]);
-      },
-      appendTestResults(testResults: any[]) {
-         setTestResults(testResults);
-      },
-   }));
+const TestsResults = ({ testResults, message }: { testResults: any[]; message: string | undefined }) => {
+   const [expandedTest, setExpandedTest] = useState<number | null>(null);
 
    const handleCardClick = (index: number) => {
-      // Toggle expanded state of the card clicked
       setExpandedTest(expandedTest === index ? null : index);
    };
 
    return (
-      <div className="w-full bg-gray-800 text-white">
+      <div className="w-full h-full bg-gray-800 text-white">
          <div className="font-semibold bg-gray-900 w-full px-3 py-2">Tests Results</div>
-         <div ref={consoleRef} className="w-full h-full p-4 overflow-x-scroll">
+         <div className="w-full h-full p-4 overflow-x-scroll">
             {testResults.length > 0 ? (
                testResults.map((test, index) => (
                   <div
                      key={index}
-                     className={`bg-gray-700 p-4 mb-4 rounded-lg cursor-pointer ${
-                        test.status ? "border-2 border-green-500" : "border-2 border-red-500"
-                     }`}
+                     className={`bg-gray-700 p-4 mb-4 rounded-lg cursor-pointer ${test.status ? 'border-2 border-green-500' : 'border-2 border-red-500'}`}
                      onClick={() => handleCardClick(index)} // Handle click to expand
                   >
                      <h4 className="text-lg font-semibold">
-                        Test {index + 1} - {test.status ? "Passed" : "Failed"}
+                        Test {index + 1} - {test.status ? 'Passed' : 'Failed'}
                      </h4>
 
                      {/* Minimal Information (only visible when not expanded) */}
                      {expandedTest !== index && (
                         <div className="mt-2 text-sm">
                            <strong>Status: </strong>
-                           {test.status ? "Passed" : "Failed"}
+                           {test.status ? 'Passed' : 'Failed'}
                         </div>
                      )}
 
@@ -68,12 +49,14 @@ const TestsResults = forwardRef((props, ref) => {
                      )}
                   </div>
                ))
+            ) : message ? (
+               <div>{message}</div>
             ) : (
-               <div>No test results yet.</div>
+               <div>No tests results yet.</div>
             )}
          </div>
       </div>
    );
-});
+};
 
 export default TestsResults;

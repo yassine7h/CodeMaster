@@ -21,6 +21,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = "django-insecure-+4azf9u^fl+-zbf5x5jn_*(yh)+mo2o-8+31$$=x3mhtex)&%v"
 
+APPEND_SLASH = False
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -37,19 +39,12 @@ CSRF_TRUSTED_ORIGINS = ['http://localhost:5173', 'https://localhost:5173']
 
 INSTALLED_APPS = [
     "jazzmin",
-    # "unfold",
-    # "unfold.contrib.filters",
-    # "unfold.contrib.forms",
-    # "unfold.contrib.inlines",
-    # "unfold.contrib.import_export",
-    # "unfold.contrib.guardian",
-    # "unfold.contrib.simple_history",
-
     "main",
     "test_cases_runner",
     "executor",
     "corsheaders",
     "rest_framework",
+    "rest_framework.authtoken",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -57,6 +52,8 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
 ]
+
+AUTH_USER_MODEL = 'main.User'
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
@@ -176,7 +173,6 @@ LOGGING = {
     },
 }
 
-
 JAZZMIN_SETTINGS = {
     "site_title": "",
     "site_header": "",
@@ -190,7 +186,7 @@ JAZZMIN_SETTINGS = {
     "search_model": ["auth.User", "auth.Group"],
     "user_avatar": None,
     "topmenu_links": [
-        {"name": "Home",  "url": "admin:index", "permissions": ["auth.view_user"]},
+        {"name": "Home", "url": "admin:index", "permissions": ["auth.view_user"]},
     ],
     "show_sidebar": False,
     "navigation_expanded": False,
@@ -200,8 +196,6 @@ JAZZMIN_SETTINGS = {
     "show_footer": False,
     "custom_css": "styles.css",
 }
-
-
 
 # JAZZMIN_SETTINGS = {
 #     # title of the window (Will default to current_admin_site.site_title if absent or None)

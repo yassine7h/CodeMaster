@@ -1,12 +1,12 @@
-import React from "react";
-import { Navigate } from "react-router-dom";
-import { useGlobalContext } from "./contexts/GlobalContext";
+import React from 'react';
+import { Navigate } from 'react-router-dom';
+import { useGlobalContext } from './contexts/GlobalContext';
 
 interface ProtectedRouteProps {
    roles: Role[];
    component: React.ComponentType;
 }
-export type Role = "ADMIN" | "USER" | "SUPADMIN";
+export type Role = 'ADMIN' | 'CREATOR' | 'LEARNER';
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ roles, component: Component }) => {
    const { value } = useGlobalContext();
