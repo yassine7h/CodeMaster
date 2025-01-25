@@ -65,13 +65,10 @@ export default function ProblemCodeEditor() {
          <SplitPanel>
             <div className="w-full h-full grid grid-rows-[auto_1fr]">
                <div className="row-span-1 w-full flex justify-between items-center p-3 border-b-2 border-black">
-                  <div className="flex items-end gap-3">
-                     <p className="text-white text-sm font-semibold">Compiler:</p>
-                     <select className="bg-black text-white ring-1 ring-white rounded px-1" onChange={onSelectLanguage} value={language}>
-                        <option value="java">Java 17</option>
-                        <option value="python">Python 3.9</option>
-                     </select>
-                  </div>
+                  <select className="bg-black text-white ring-1 ring-white rounded px-1" onChange={onSelectLanguage} value={language}>
+                     <option value="java">Java 17</option>
+                     <option value="python">Python 3.9</option>
+                  </select>
                   <button onClick={runCode} className="bg-black hover:bg-blue-500 px-3 py-1 rounded-lg text-white font-semibold flex items-center justify-center">
                      Run
                   </button>

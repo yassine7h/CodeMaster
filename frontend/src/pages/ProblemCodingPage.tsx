@@ -27,7 +27,7 @@ export default function ProblemCodingPage() {
                <h3 className="font-medium mt-4 mb-2 text-white">Example</h3>
                <p className="text-sm text-gray-400">{exampleContent}</p>
 
-               <h3 className="text-lg font-medium mt-4 mb-2 text-white">Function Description</h3>
+               <h3 className="font-medium mt-4 mb-2 text-white">Function Description</h3>
                <div className="text-sm text-gray-400" style={{ whiteSpace: 'pre-wrap' }}>
                   {functionDescriptionContent}
                </div>
