@@ -18,11 +18,7 @@ import Compiler from './pages/Compiler.tsx';
 const router = createBrowserRouter([
    {
       path: '/',
-      element: (
-         <Layout>
-            <Home />
-         </Layout>
-      ),
+      element: <Home />,
    },
    {
       path: '/auth/signin',
@@ -34,11 +30,7 @@ const router = createBrowserRouter([
    },
    {
       path: '/problems',
-      element: (
-         <Layout>
-            <ProblemsPage />
-         </Layout>
-      ),
+      element: <ProtectedRoute roles={['ADMIN', 'CREATOR', 'LEARNER']} component={ProblemsPage} />,
    },
    {
       path: '/problems/:problemId',
@@ -62,13 +54,13 @@ const router = createBrowserRouter([
    },
    {
       path: '/superadmin',
-      element: <SuperAdmin />,
+      element: <ProtectedRoute roles={['ADMIN']} component={SuperAdmin} />,
    },
    {
       path: '/unauthorized',
       element: (
          <Layout>
-            <h1 className="text-xl font-semibold p-3">You are not authorized to view this page</h1>
+            <h1 className="text-xl text-white font-semibold p-3">You are not authorized to view this page</h1>
          </Layout>
       ),
    },
@@ -76,7 +68,7 @@ const router = createBrowserRouter([
       path: '*',
       element: (
          <Layout>
-            <h1 className="text-xl font-semibold p-3">Page Not Found</h1>
+            <h1 className="text-xl text-white font-semibold p-3">Page Not Found</h1>
          </Layout>
       ),
    },

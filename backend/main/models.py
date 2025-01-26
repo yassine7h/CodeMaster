@@ -7,15 +7,17 @@ from .validators import *
 
 
 class User(AbstractUser):
-    # Optional: Add a direct role field
-    ROLES = ('ADMIN', 'CREATOR', 'LEARNER')
+    email = models.EmailField(unique=True)
+
+    ROLES = ('CREATOR', 'LEARNER')
     roles = models.JSONField(default=list)
+    avatar = models.ImageField(upload_to='avatars/')
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         # Map JSON roles to groups
         current_groups = set(self.groups.values_list('name', flat=True))
-        new_groups = set(json.loads(self.roles.__str__()))
+        new_groups = set(self.roles or [])
         # Remove old groups
         groups_to_remove = current_groups - new_groups
         if groups_to_remove:

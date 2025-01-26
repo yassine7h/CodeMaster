@@ -16,7 +16,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ roles, component: Compo
       return user?.roles?.some((role) => roles.includes(role as Role)) || false;
    };
 
-   if (!user) return <Navigate to="/auth" replace />;
+   if (!user) return <Navigate to="/auth/signin" replace />;
 
    if (!checkRoules()) {
       return <Navigate to="/unauthorized" replace />;

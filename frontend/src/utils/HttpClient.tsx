@@ -56,5 +56,5 @@ class HttpClient {
       return this.axiosInstance.delete<T>(url, config);
    }
 }
-
-export const http = new HttpClient(import.meta.env.VITE_API_BASE_URL);
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+export const http = new HttpClient(API_BASE_URL);

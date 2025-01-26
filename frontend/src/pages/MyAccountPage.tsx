@@ -1,133 +1,131 @@
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { useGlobalContext, User } from "../contexts/GlobalContext";
-import { http } from "../utils/HttpClient";
-import { useHttpErrorHandler } from "../hooks/httpErrorHandler";
-import Layout from "../layouts/Layout";
+import React from 'react';
+import { FaCamera } from 'react-icons/fa';
+import { useSnackbar } from 'notistack';
+import { useForm } from 'react-hook-form';
+import { useGlobalContext } from '../contexts/GlobalContext';
+import Layout from '../layouts/Layout';
+import { http, API_BASE_URL } from '../utils/HttpClient';
+import { useHttpErrorHandler } from '../hooks/httpErrorHandler';
 
-type UserInfo = {
-   firstname?: string;
-   lastname?: string;
-   password?: string;
-   address?: string;
+type UpdatePassword = {
+   current: string;
+   new: string;
+   confirm: string;
 };
 
-const MyAccountPage = () => {
+const defaultValues: UpdatePassword = {
+   current: '',
+   new: '',
+   confirm: '',
+};
+
+const AccountPage = () => {
+   const { enqueueSnackbar } = useSnackbar();
+   const handleHttpError = useHttpErrorHandler();
    const { value, setUser } = useGlobalContext();
-   const user = value.user;
-   if (!user) return null;
-   const defaultValues: UserInfo = {
-      firstname: user.firstname,
-      lastname: user.lastname,
-      address: user.address,
-   };
-   const [isEditing, setIsEditing] = useState(false);
+   const userData = value.user;
+   if (!userData) return null;
    const {
       register,
       handleSubmit,
       reset,
+      watch,
       formState: { errors },
-   } = useForm<UserInfo>({
+   } = useForm<UpdatePassword>({
       defaultValues: defaultValues,
    });
-   const handleHttpError = useHttpErrorHandler();
 
-   const onSubmit = (data: UserInfo) => {
-      if (!user) return;
+   const onSubmit = (data: UpdatePassword) => {
       http
-         .patch(`/users/${user.id}`, data)
-         .then((response) => {
-            setUser(response.data as User);
-            setIsEditing(false);
+         .post('/auth/update-password', { currentPassword: data.current, newPassword: data.new })
+         .then(() => {
+            enqueueSnackbar('Password updated successfully', { variant: 'success' });
+            reset();
          })
          .catch(handleHttpError);
    };
 
-   const handleCancel = () => {
-      setIsEditing(false);
-      reset(user);
+   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0] as File;
+      const formData = new FormData();
+      formData.append('avatar', file);
+      console.log('FormData content:', ...formData.entries());
+      http
+         .post('/users/update-avatar', formData, {
+            headers: {
+               'Content-Type': 'multipart/form-data',
+            },
+         })
+         .then((response) => {
+            setUser({ ...userData, avatar: response.data as string });
+            enqueueSnackbar('Profile avatar updated', { variant: 'success' });
+            console.log(userData);
+         })
+         .catch(handleHttpError);
    };
-
-   if (!user) return <p>Loading user data...</p>;
 
    return (
       <Layout>
-         <div className="max-w-md w-full mx-auto p-6 bg-white shadow-md rounded-md mt-10">
-            <h1 className="w-full text-xl font-bold mb-4">My Account</h1>
-            {!isEditing ? (
-               <div>
-                  <div className="flex">
-                     <div className="font-semibold w-[100px]">Email:</div> <div> {user.email}</div>
-                  </div>
-                  <div className="flex">
-                     <div className="font-semibold w-[100px]">Firstname:</div> <div> {user.firstname}</div>
-                  </div>
-                  <div className="flex">
-                     <div className="font-semibold w-[100px]">Lastname:</div> <div> {user.lastname}</div>
-                  </div>
-                  {user.roles.includes("CLIENT") && (
-                     <div className="flex">
-                        <div className="font-semibold w-[100px]">Address:</div> <div> {user.address}</div>
+         <div className="container mx-auto p-6 max-w-2xl my-6">
+            <h1 className="text-xl text-white font-bold mb-6">Account Settings</h1>
+
+            <div className="space-y-6">
+               {/* Profile Section */}
+               <div className="bg-gray-800 rounded-lg shadow p-6">
+                  <h2 className="text-white font-semibold mb-4">Profile Information</h2>
+                  <div className="flex items-center space-x-6">
+                     <div className="relative">
+                        <img src={API_BASE_URL + userData.avatar} className="w-28 h-28 rounded-full object-cover ring-2 bg-white" />
+                        <label className="absolute bottom-0 right-0 p-1 bg-black rounded-full shadow-lg cursor-pointer hover:bg-blue-500">
+                           <FaCamera className="w-6 h-6 p-1 text-white" />
+                           <input type="file" className="hidden" accept="image/*" onChange={handleImageUpload} />
+                        </label>
                      </div>
-                  )}
-                  <div className="flex w-full justify-end">
-                     <button onClick={() => setIsEditing(true)} className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
-                        Modify
-                     </button>
+                     <div className="space-y-4 flex-1">
+                        <div>
+                           <label className="block text-sm font-medium text-gray-400 mb-1">Username</label>
+                           <input type="text" value={userData.username} disabled className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50" />
+                        </div>
+                        <div>
+                           <label className="block text-sm font-medium text-gray-400 mb-1">Email</label>
+                           <input type="email" value={userData.email} disabled className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50" />
+                        </div>
+                     </div>
                   </div>
                </div>
-            ) : (
-               <form onSubmit={handleSubmit(onSubmit)}>
-                  <div className="mb-4">
-                     <label className="block mb-2 font-semibold">Firstname</label>
-                     <input
-                        type="text"
-                        {...register("firstname", { required: "Firstname should not be empty" })}
-                        className="w-full px-4 py-2 border rounded-md"
-                        autoComplete="off"
-                     />
-                     {errors.firstname && <p className="text-red-500 text-sm mt-1">{errors.firstname.message}</p>}
-                  </div>
-                  <div className="mb-4">
-                     <label className="block mb-2 font-semibold">Lastname</label>
-                     <input
-                        type="text"
-                        {...register("lastname", { required: "Lastname should not be empty" })}
-                        className="w-full px-4 py-2 border rounded-md"
-                        autoComplete="off"
-                     />
-                     {errors.lastname && <p className="text-red-500 text-sm mt-1">{errors.lastname.message}</p>}
-                  </div>
-                  {user.roles.includes("CLIENT") && (
-                     <div className="mb-4">
-                        <label className="block mb-2 font-semibold">Address</label>
-                        <input
-                           type="text"
-                           {...register("address", { required: "Address should not be empty" })}
-                           className="w-full px-4 py-2 border rounded-md"
-                           autoComplete="off"
-                        />
-                        {errors.address && <p className="text-red-500 text-sm mt-1">{errors.address.message}</p>}
+
+               {/* Password Change Section */}
+               <div className="bg-gray-800 rounded-lg shadow p-6">
+                  <h2 className="text-white font-semibold mb-4">Change Password</h2>
+                  <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                     <div>
+                        <label className="block text-sm font-medium text-gray-400 mb-1">Current Password</label>
+                        <input type="password" {...register('current', { required: 'Current password is required' })} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" />
+                        {errors.current && <p className="mt-1 text-sm text-red-400">{errors.current.message}</p>}
                      </div>
-                  )}
-                  <div className="mb-4">
-                     <label className="block mb-2 font-semibold">New password</label>
-                     <input type="password" {...register("password")} className="w-full px-4 py-2 border rounded-md" autoComplete="off" />
-                     <p className="text-sm mt-1">Leave the password empty if you do not want to change it.</p>
-                  </div>
-                  <div className="mt-4 flex justify-end gap-4">
-                     <button type="button" onClick={handleCancel} className="px-4 py-2 bg-gray-300 rounded-md hover:bg-gray-400">
-                        Cancel
+                     <div>
+                        <label className="block text-sm font-medium text-gray-400 mb-1">New Password</label>
+                        <input type="password" {...register('new', { required: 'New password is required' })} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" />
+                        {errors.new && <p className="mt-1 text-sm text-red-400">{errors.new.message}</p>}
+                     </div>
+                     <div>
+                        <label className="block text-sm font-medium text-gray-400 mb-1">Confirm New Password</label>
+                        <input
+                           type="password"
+                           {...register('confirm', { required: 'Please confirm your password', validate: (value) => value === watch('new') || 'Passwords do not match' })}
+                           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                        />
+                        {errors.confirm && <p className="mt-1 text-sm text-red-400">{errors.confirm.message}</p>}
+                     </div>
+                     <button type="submit" className="w-full bg-black text-white font-semibold text-sm py-2 px-4 rounded-md hover:bg-blue-500 focus:outline-none focus:ring-2">
+                        Update Password
                      </button>
-                     <button type="submit" className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
-                        Submit
-                     </button>
-                  </div>
-               </form>
-            )}
+                  </form>
+               </div>
+            </div>
          </div>
       </Layout>
    );
 };
 
-export default MyAccountPage;
+export default AccountPage;

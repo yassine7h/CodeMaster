@@ -5,6 +5,7 @@ import { BsPersonCircle } from 'react-icons/bs';
 import { useGlobalContext } from '../contexts/GlobalContext';
 import { MdOutlineManageAccounts } from 'react-icons/md';
 import { BiLogOut } from 'react-icons/bi';
+import { API_BASE_URL } from '../utils/HttpClient';
 
 export default function Layout({ children }: React.PropsWithChildren<{}>) {
    const { value } = useGlobalContext();
@@ -49,7 +50,7 @@ export default function Layout({ children }: React.PropsWithChildren<{}>) {
             </div>
 
             {/* Navigation Menu */}
-            <div className="flex gap-6 items-center">
+            <div className="flex gap-4 items-center">
                {/* Navigation Links */}
                <div className="flex gap-2">
                   <Link to="/problems" className="hover:bg-blue-500 px-4 py-2 rounded-md font-semibold">
@@ -62,12 +63,12 @@ export default function Layout({ children }: React.PropsWithChildren<{}>) {
 
                {/* User Dropdown */}
                {value.user ? (
-                  <div className="relative" ref={dropdownRef}>
-                     <button onClick={toggleDropdown} className={(dropdownOpen ? 'bg-blue-500 ' : '') + 'flex items-center justify-center gap-2 hover:bg-blue-500 p-2 rounded-md font-semibold'}>
-                        <BsPersonCircle size={30} />
+                  <div className="relative">
+                     <button onClick={toggleDropdown} className={(dropdownOpen ? 'ring-2 ' : '') + 'flex items-center justify-center hover:ring-2 ring-blue-500 rounded-full'}>
+                        {value.user.avatar ? <img src={API_BASE_URL + value.user.avatar} className="w-8 aspect-square rounded-full bg-white" /> : <BsPersonCircle size={33} />}
                      </button>
                      {dropdownOpen && (
-                        <div className="absolute min-w-[180px] right-0 mt-2 bg-white text-black shadow-lg rounded-md py-2 z-50">
+                        <div ref={dropdownRef} className="absolute min-w-[180px] right-0 mt-2 bg-white text-black shadow-lg rounded-md py-2 z-50">
                            <Link to="/myaccount" className="flex items-center gap-2 w-full text-left px-4 py-2 hover:bg-gray-100">
                               <MdOutlineManageAccounts size={20} />
                               <p>My Account</p>
@@ -93,7 +94,7 @@ export default function Layout({ children }: React.PropsWithChildren<{}>) {
             </div>
          </nav>
 
-         <main className="flex-1 overflow-auto">{children}</main>
+         <main className="flex-1 overflow-auto bg-gray-900">{children}</main>
       </div>
    );
 }

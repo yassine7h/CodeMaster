@@ -53,6 +53,7 @@ export default function AuthPage({ isLogin }: { isLogin: boolean }) {
       if (data?.message) {
          setMessage(data.message);
          setShowMessage(true);
+         navigate('/auth/signin');
          return;
       }
       const user: User = data.user;
@@ -62,7 +63,7 @@ export default function AuthPage({ isLogin }: { isLogin: boolean }) {
       setUser(user);
 
       if (isLearner) navigate('/');
-      if (isCreator) navigate('/');
+      else if (isCreator) navigate('/');
    };
 
    return (
@@ -76,7 +77,13 @@ export default function AuthPage({ isLogin }: { isLogin: boolean }) {
                      <input type="email" {...register('email', { required: 'Email is required' })} className="w-full mt-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
                      {errors.email && <p className="text-red-400 text-sm mt-1">{errors.email.message}</p>}
                   </div>
-
+                  {!isLogin && (
+                     <div>
+                        <label className="block text-sm font-medium text-gray-400">Username</label>
+                        <input type="text" {...register('username', { required: 'Username is required' })} className="w-full mt-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                        {errors.username && <p className="text-red-400 text-sm mt-1">{errors.username.message}</p>}
+                     </div>
+                  )}
                   <div>
                      <label className="block text-sm font-medium text-gray-400">Password</label>
                      <input
@@ -89,28 +96,20 @@ export default function AuthPage({ isLogin }: { isLogin: boolean }) {
                      {errors.password && <p className="text-red-400 text-sm mt-1">{errors.password.message}</p>}
                   </div>
                   {!isLogin && (
-                     <>
-                        <div>
-                           <label className="block text-sm font-medium text-gray-400">Username</label>
-                           <input type="text" {...register('username', { required: 'Username is required' })} className="w-full mt-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                           {errors.username && <p className="text-red-400 text-sm mt-1">{errors.username.message}</p>}
+                     <div className="w-full">
+                        <label className="block text-sm font-medium text-gray-400">You are</label>
+                        <div className="mt-1 flex ring-2 ring-gray-400 rounded px-4 py-3 space-x-4 text-gray-400 text-sm w-full justify-around">
+                           <label className="flex items-center">
+                              <input type="radio" value="LEARNER" {...register('roles', { required: 'A role selection is required' })} className="mr-2 accent-blue-500" />
+                              Learner
+                           </label>
+                           <label className="flex items-center">
+                              <input type="radio" value="CREATOR" {...register('roles', { required: 'A role selection is required' })} className="mr-2 accent-blue-500" />
+                              Creator
+                           </label>
                         </div>
-
-                        <div className="w-full">
-                           <label className="block text-sm font-medium text-gray-400">You are</label>
-                           <div className="mt-1 flex ring-2 ring-gray-400 rounded px-4 py-3 space-x-4 text-gray-400 text-sm w-full justify-around">
-                              <label className="flex items-center">
-                                 <input type="radio" value="LEARNER" {...register('roles', { required: 'A role selection is required' })} className="mr-2 accent-blue-500" />
-                                 Learner
-                              </label>
-                              <label className="flex items-center">
-                                 <input type="radio" value="CREATOR" {...register('roles', { required: 'A role selection is required' })} className="mr-2 accent-blue-500" />
-                                 Creator
-                              </label>
-                           </div>
-                           {errors.roles && <p className="text-red-400 text-sm mt-1">{errors.roles.message}</p>}
-                        </div>
-                     </>
+                        {errors.roles && <p className="text-red-400 text-sm mt-1">{errors.roles.message}</p>}
+                     </div>
                   )}
 
                   <button type="submit" className="w-full bg-black text-blue-500 font-semibold py-2 rounded-md hover:bg-blue-500 hover:text-white transition">

@@ -3,6 +3,7 @@ import { http } from '../utils/HttpClient';
 
 export interface User {
    id: number;
+   avatar: string;
    username: string;
    email: string;
    roles: string[];
