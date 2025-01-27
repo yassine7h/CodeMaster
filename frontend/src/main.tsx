@@ -10,10 +10,12 @@ import MyAccountPage from './pages/MyAccountPage.tsx';
 import Home from './pages/Home.tsx';
 import ProblemsPage from './pages/ProblemsPage.tsx';
 import ProblemCodingPage from './pages/ProblemCodingPage.tsx';
-import AdminAddProblemPage from './pages/AdminAddProblemsPage.tsx';
+import CreatorDashboard from './pages/CreatorDashboard.tsx';
 import Layout from './layouts/Layout.tsx';
-import SuperAdmin from './pages/SuperAdmin.tsx';
+import AdminDashboard from './pages/AdminDashboard.tsx';
 import Compiler from './pages/Compiler.tsx';
+import LearnerStats from './pages/LearnerStats.tsx';
+import GlobalStats from './pages/GlobalStats.tsx';
 
 const router = createBrowserRouter([
    {
@@ -28,33 +30,38 @@ const router = createBrowserRouter([
       path: '/auth/signup',
       element: <AuthPage isLogin={false} />,
    },
+
+   {
+      path: '/myaccount',
+      element: <ProtectedRoute roles={['ADMIN', 'CREATOR', 'LEARNER']} component={MyAccountPage} />,
+   },
+   {
+      path: '/mystats',
+      element: <ProtectedRoute roles={['LEARNER']} component={LearnerStats} />,
+   },
+   {
+      path: '/global-stats',
+      element: <ProtectedRoute roles={['ADMIN', 'CREATOR', 'LEARNER']} component={GlobalStats} />,
+   },
    {
       path: '/problems',
       element: <ProtectedRoute roles={['ADMIN', 'CREATOR', 'LEARNER']} component={ProblemsPage} />,
    },
    {
       path: '/problems/:problemId',
-      element: <ProblemCodingPage />,
+      element: <ProtectedRoute roles={['ADMIN', 'CREATOR', 'LEARNER']} component={ProblemCodingPage} />,
    },
    {
       path: '/compiler',
       element: <Compiler />,
    },
    {
-      path: '/admin/addproblem',
-      element: (
-         <Layout>
-            <AdminAddProblemPage />
-         </Layout>
-      ),
+      path: '/admin/dashboard',
+      element: <ProtectedRoute roles={['ADMIN']} component={AdminDashboard} />,
    },
    {
-      path: '/myaccount',
-      element: <ProtectedRoute roles={['ADMIN', 'CREATOR', 'LEARNER']} component={MyAccountPage} />,
-   },
-   {
-      path: '/superadmin',
-      element: <ProtectedRoute roles={['ADMIN']} component={SuperAdmin} />,
+      path: '/creator/dashboard',
+      element: <ProtectedRoute roles={['CREATOR', 'ADMIN']} component={CreatorDashboard} />,
    },
    {
       path: '/unauthorized',

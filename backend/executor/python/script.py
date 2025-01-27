@@ -5,6 +5,7 @@ import subprocess
 import tempfile
 import os
 
+
 def run_code(code: str) -> dict:
     with tempfile.NamedTemporaryFile(suffix='.py', mode='w', delete=False) as f:
         f.write(code)
@@ -37,6 +38,7 @@ def run_code(code: str) -> dict:
 
     os.unlink(temp_file)
     return result
+
 
 if __name__ == '__main__':
     if len(sys.argv) < 2:

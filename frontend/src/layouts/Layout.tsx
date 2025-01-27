@@ -6,6 +6,7 @@ import { useGlobalContext } from '../contexts/GlobalContext';
 import { MdOutlineManageAccounts } from 'react-icons/md';
 import { BiLogOut } from 'react-icons/bi';
 import { API_BASE_URL } from '../utils/HttpClient';
+import { ImStatsDots } from 'react-icons/im';
 
 export default function Layout({ children }: React.PropsWithChildren<{}>) {
    const { value } = useGlobalContext();
@@ -14,7 +15,8 @@ export default function Layout({ children }: React.PropsWithChildren<{}>) {
    const [dropdownOpen, setDropdownOpen] = useState(false);
    const dropdownRef = useRef<HTMLDivElement>(null);
 
-   const roles = {
+   const role = {
+      isAdmin: value.user?.roles?.includes('ADMIN'),
       isLearner: value.user?.roles?.includes('LEARNER'),
       isCreator: value.user?.roles?.includes('CREATOR'),
    };
@@ -59,20 +61,41 @@ export default function Layout({ children }: React.PropsWithChildren<{}>) {
                   <Link to="/compiler" className="hover:bg-blue-500 px-4 py-2 rounded-md font-semibold">
                      Compiler
                   </Link>
+                  {value.user && (
+                     <Link to="/global-stats" className="hover:bg-blue-500 px-4 py-2 rounded-md font-semibold">
+                        Global Stats
+                     </Link>
+                  )}
+                  {role.isCreator && (
+                     <Link to="/creator/dashboard" className="hover:bg-blue-500 px-4 py-2 rounded-md font-semibold">
+                        Creator Dashboard
+                     </Link>
+                  )}
+                  {role.isAdmin && (
+                     <Link to="/admin/dashboard" className="hover:bg-blue-500 px-4 py-2 rounded-md font-semibold">
+                        Admin Dashboard
+                     </Link>
+                  )}
                </div>
 
                {/* User Dropdown */}
                {value.user ? (
-                  <div className="relative">
+                  <div ref={dropdownRef} className="relative">
                      <button onClick={toggleDropdown} className={(dropdownOpen ? 'ring-2 ' : '') + 'flex items-center justify-center hover:ring-2 ring-blue-500 rounded-full'}>
                         {value.user.avatar ? <img src={API_BASE_URL + value.user.avatar} className="w-8 aspect-square rounded-full bg-white" /> : <BsPersonCircle size={33} />}
                      </button>
                      {dropdownOpen && (
-                        <div ref={dropdownRef} className="absolute min-w-[180px] right-0 mt-2 bg-white text-black shadow-lg rounded-md py-2 z-50">
+                        <div className="absolute min-w-[180px] right-0 mt-2 bg-white text-black shadow-lg rounded-md py-2 z-50">
                            <Link to="/myaccount" className="flex items-center gap-2 w-full text-left px-4 py-2 hover:bg-gray-100">
                               <MdOutlineManageAccounts size={20} />
                               <p>My Account</p>
                            </Link>
+                           {role.isLearner && (
+                              <Link to="/mystats" className="flex items-center gap-2 w-full text-left px-4 py-2 hover:bg-gray-100">
+                                 <ImStatsDots size={18} />
+                                 <p>My Stats</p>
+                              </Link>
+                           )}
                            <button type="button" onClick={logout} className="flex items-center gap-2 w-full text-left px-4 py-2 hover:bg-gray-100">
                               <BiLogOut size={20} />
                               <p>Logout</p>

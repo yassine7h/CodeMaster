@@ -11,11 +11,11 @@ logger = logging.getLogger(__name__)
 @api_view(['POST'])
 def run_python_code(request):
     try:
-        tests_res = run_code(
+        res = run_code(
             container_name="executor_python",
             code=request.data["code"],
         )
-        return Response(tests_res, status=status.HTTP_200_OK)
+        return Response(res, status=status.HTTP_200_OK)
     except CalledProcessError as e:
         logger.error(e.stderr)
         return Response("INTERNAL_SERVER_ERROR", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -23,11 +23,11 @@ def run_python_code(request):
 @api_view(['POST'])
 def run_java_code(request):
     try:
-        tests_res = run_code(
+        res = run_code(
             container_name="executor_java",
             code=request.data["code"],
         )
-        return Response(tests_res, status=status.HTTP_200_OK)
+        return Response(res, status=status.HTTP_200_OK)
     except CalledProcessError as e:
         logger.error(e.stderr)
         return Response("INTERNAL_SERVER_ERROR", status=status.HTTP_500_INTERNAL_SERVER_ERROR)

@@ -1,34 +1,7 @@
-import json
-
 from django.db import models
-from django.contrib.auth.models import AbstractUser, Group
 from django.db.models.functions import Now
 from .validators import *
-
-
-class User(AbstractUser):
-    email = models.EmailField(unique=True)
-
-    ROLES = ('CREATOR', 'LEARNER')
-    roles = models.JSONField(default=list)
-    avatar = models.ImageField(upload_to='avatars/')
-
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-        # Map JSON roles to groups
-        current_groups = set(self.groups.values_list('name', flat=True))
-        new_groups = set(self.roles or [])
-        # Remove old groups
-        groups_to_remove = current_groups - new_groups
-        if groups_to_remove:
-            remove_groups = Group.objects.filter(name__in=groups_to_remove)
-            self.groups.remove(*remove_groups)
-        # Add new groups
-        groups_to_add = new_groups - current_groups
-        if groups_to_add:
-            add_groups = Group.objects.filter(name__in=groups_to_add)
-            self.groups.add(*add_groups)
-
+from accounts.models import User
 
 class Problem(models.Model):
     name = models.CharField(max_length=255)

@@ -1,7 +1,7 @@
 import Layout from '../layouts/Layout';
 import { API_BASE_URL } from '../utils/HttpClient';
 
-export default function SuperAdmin() {
+export default function AdminDashboard() {
    const adminpageURL = `${API_BASE_URL}/admin/`;
    return (
       <Layout>

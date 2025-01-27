@@ -61,8 +61,9 @@ export default function Home() {
                </div>
             </div>
 
-            <div className="flex flex-col gap-4 mx-10 py-10 bg-white justify-center items-center">
-               <pre>{'USER=' + JSON.stringify(value.user, null, 2)}</pre>
+            {/* Debug Section */}
+            <div className="flex gap-20 mx-10 py-10 bg-white justify-around items-start">
+               <pre className="text-sm">{'USER=' + JSON.stringify(value.user, null, 2)}</pre>
                <button
                   className="bg-blue-500 text-white px-4 py-2 rounded-md"
                   onClick={() => {

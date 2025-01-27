@@ -28,6 +28,9 @@ APPEND_SLASH = False
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
+# User class
+AUTH_USER_MODEL = 'accounts.User'
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -45,6 +48,7 @@ CSRF_TRUSTED_ORIGINS = ['http://localhost:5173', 'https://localhost:5173']
 INSTALLED_APPS = [
     "jazzmin",
     "main",
+    "accounts",
     "test_cases_runner",
     "executor",
     "corsheaders",
@@ -58,7 +62,6 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
 ]
 
-AUTH_USER_MODEL = 'main.User'
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",

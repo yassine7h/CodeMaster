@@ -40,16 +40,15 @@ export default function AuthPage({ isLogin }: { isLogin: boolean }) {
       if (isLogin) {
          const formdata: LoginFormInputs = { email: data.email, password: data.password };
          console.log(formdata);
-         http.post('/auth/signin', formdata).then(handleAuth).catch(handleHttpError);
+         http.post('/accounts/signin', formdata).then(handleAuth).catch(handleHttpError);
       } else {
          const formdata: SignupFormInputs = { ...data, roles: [data.roles as any] as Role[] };
          console.log(formdata);
-         http.post('/auth/signup', formdata).then(handleAuth).catch(handleHttpError);
+         http.post('/accounts/signup', formdata).then(handleAuth).catch(handleHttpError);
       }
    };
    const handleAuth = (response: AxiosResponse<unknown, any>) => {
       const data = response?.data as any;
-      console.log('SERVER RESPONSE', data);
       if (data?.message) {
          setMessage(data.message);
          setShowMessage(true);
@@ -74,13 +73,21 @@ export default function AuthPage({ isLogin }: { isLogin: boolean }) {
                <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                   <div>
                      <label className="block text-sm font-medium text-gray-400">Email</label>
-                     <input type="email" {...register('email', { required: 'Email is required' })} className="w-full mt-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                     <input
+                        type="email"
+                        {...register('email', { required: 'Email is required' })}
+                        className="w-full mt-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                     />
                      {errors.email && <p className="text-red-400 text-sm mt-1">{errors.email.message}</p>}
                   </div>
                   {!isLogin && (
                      <div>
                         <label className="block text-sm font-medium text-gray-400">Username</label>
-                        <input type="text" {...register('username', { required: 'Username is required' })} className="w-full mt-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                        <input
+                           type="text"
+                           {...register('username', { required: 'Username is required' })}
+                           className="w-full mt-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
                         {errors.username && <p className="text-red-400 text-sm mt-1">{errors.username.message}</p>}
                      </div>
                   )}

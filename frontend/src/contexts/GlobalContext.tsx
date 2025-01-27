@@ -48,7 +48,7 @@ export const GlobalContextProvider: React.FC<{ children: React.ReactNode }> = ({
 
    (function () {
       http
-         .get('/users/me')
+         .get('/accounts/me')
          .then((response) => {
             const user = (response?.data as { user: User }).user;
             setUser(user);
