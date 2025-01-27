@@ -102,6 +102,8 @@ def update_avatar(request):
 
 
 @api_view(['POST'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def logout(request):
     try:
         Token.objects.filter(user=request.user).delete()

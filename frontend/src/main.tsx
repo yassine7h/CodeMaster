@@ -16,6 +16,7 @@ import AdminDashboard from './pages/AdminDashboard.tsx';
 import Compiler from './pages/Compiler.tsx';
 import LearnerStats from './pages/LearnerStats.tsx';
 import GlobalStats from './pages/GlobalStats.tsx';
+import AlterProblem from './pages/AlterProblem.tsx';
 
 const router = createBrowserRouter([
    {
@@ -62,6 +63,10 @@ const router = createBrowserRouter([
    {
       path: '/creator/dashboard',
       element: <ProtectedRoute roles={['CREATOR', 'ADMIN']} component={CreatorDashboard} />,
+   },
+   {
+      path: '/creator/problems/:id',
+      element: <ProtectedRoute roles={['CREATOR', 'ADMIN']} component={AlterProblem} />,
    },
    {
       path: '/unauthorized',

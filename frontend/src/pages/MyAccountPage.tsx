@@ -68,8 +68,16 @@ const AccountPage = () => {
    return (
       <Layout>
          <div className="container mx-auto p-6 max-w-2xl my-6">
-            <h1 className="text-xl text-white font-bold mb-6">Account Settings</h1>
-
+            <div className="flex justify-between items-center mb-6">
+               <h1 className="text-xl text-white font-bold">Account Settings</h1>
+               <div className="flex space-x-2">
+                  {userData.roles.map((role) => (
+                     <span key={role} className="px-2 py-1 bg-blue-500 text-white rounded-md text-xs font-semibold">
+                        {role}
+                     </span>
+                  ))}
+               </div>
+            </div>
             <div className="space-y-6">
                {/* Profile Section */}
                <div className="bg-gray-800 rounded-lg shadow p-6">
