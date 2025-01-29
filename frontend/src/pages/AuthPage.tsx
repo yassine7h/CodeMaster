@@ -28,7 +28,7 @@ export default function AuthPage({ isLogin }: { isLogin: boolean }) {
    const { setUser } = useGlobalContext();
    const navigate = useNavigate();
 
-   const [showMessage, setShowMessage] = useState(true);
+   const [showMessage, setShowMessage] = useState(false);
    const [message, setMessage] = useState('');
    const [isLoading, setIsLoading] = useState(false);
 
