@@ -1,7 +1,7 @@
 import logging
 from django.db import IntegrityError
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
-from rest_framework.authentication import SessionAuthentication, TokenAuthentication
+from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
@@ -68,7 +68,7 @@ def login(request):
 
 
 @api_view(['POST'])
-@authentication_classes([SessionAuthentication, TokenAuthentication])
+@authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def update_password(request):
     try:
@@ -85,7 +85,7 @@ def update_password(request):
 
 
 @api_view(['POST'])
-@authentication_classes([SessionAuthentication, TokenAuthentication])
+@authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def update_avatar(request):
     try:
@@ -102,7 +102,7 @@ def update_avatar(request):
 
 
 @api_view(['POST'])
-@authentication_classes([SessionAuthentication, TokenAuthentication])
+@authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def logout(request):
     try:
@@ -114,7 +114,7 @@ def logout(request):
 
 
 @api_view(['GET'])
-@authentication_classes([SessionAuthentication, TokenAuthentication])
+@authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def get_authenticated_user(request):
     try:

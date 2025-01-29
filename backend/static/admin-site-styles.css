@@ -1,0 +1,19 @@
+nav {
+    display: none !important;
+}
+footer {
+    display: none !important;
+}
+.wrapper > * {
+    margin: 0 !important;
+}
+.content-wrapper> *{
+    transform: scale(0.9);
+    transform-origin: top center;
+}
+.display-none{
+    display: none !important;
+}
+.login-logo{
+    display: none !important;
+}

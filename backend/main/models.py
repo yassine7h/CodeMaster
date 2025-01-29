@@ -3,6 +3,14 @@ from django.db.models.functions import Now
 from .validators import *
 from accounts.models import User
 
+
+class ProblemCategory(models.Model):
+    name = models.CharField(max_length=255, unique=True)
+
+    def __str__(self):
+        return self.name
+
+
 class Problem(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField()
@@ -14,9 +22,14 @@ class Problem(models.Model):
     sample_output = models.TextField()
     explanation = models.TextField()
     difficulty = models.CharField(max_length=9,
-                                  choices={"easy": "easy", "medium": "medium", "hard": "hard"},
+                                  choices={"Easy": "Easy", "Medium": "Medium", "Hard": "Hard"},
                                   default="medium")
+    # code_template = models.JSONField(default=dict, null=True, blank=True)
+    category = models.ForeignKey(ProblemCategory, on_delete=models.SET_NULL, null=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE, validators=[validate_problem_user_admin])
+
+    def __str__(self):
+        return self.name
 
 
 class TestCase(models.Model):

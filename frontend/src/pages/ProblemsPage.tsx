@@ -1,45 +1,24 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Layout from '../layouts/Layout';
+import { http } from '../utils/HttpClient';
+import { useHttpErrorHandler } from '../hooks/httpErrorHandler';
 
 type Difficulty = 'Easy' | 'Medium' | 'Hard';
 
 interface Problem {
    id: number;
-   title: string;
-   acceptance: number;
+   name: string;
+   category: Category;
    difficulty: Difficulty;
 }
-
-const problems: Problem[] = [
-   {
-      id: 0,
-      title: 'Bitwise XOR of All Pairings',
-      acceptance: 64.4,
-      difficulty: 'Hard',
-   },
-   {
-      id: 1,
-      title: 'Two Sum',
-      acceptance: 52.2,
-      difficulty: 'Easy',
-   },
-   {
-      id: 2,
-      title: 'Add Two Numbers',
-      acceptance: 44.1,
-      difficulty: 'Medium',
-   },
-   {
-      id: 3,
-      title: 'Longest Substring Without Repeating Characters',
-      acceptance: 44.1,
-      difficulty: 'Medium',
-   },
-];
+interface Category {
+   id: number;
+   name: string;
+}
 
 const ProblemItem = ({ problem }: { problem: Problem }) => {
-   const solutionLink = `/solutions/${problem.id}`;
+   const navigate = useNavigate();
    const problemLink = `/problems/${problem.id}`;
 
    const difficultyClass = {
@@ -49,63 +28,81 @@ const ProblemItem = ({ problem }: { problem: Problem }) => {
    };
 
    return (
-      <tr key={problem.id} className="hover:bg-gray-700">
-         <td className="py-2 px-4 font-semibold">
-            <Link to={problemLink} className="hover:text-yellow-400">
-               {problem.id}
-            </Link>
-         </td>
-         <td className="py-2 px-4">
-            <Link to={problemLink} className="hover:text-yellow-400">
-               {problem.title}
-            </Link>
-         </td>
-         <td className="py-2 px-4">
-            <Link to={solutionLink} className="hover:text-yellow-400">
-               See solution
-            </Link>
-         </td>
-         <td className="py-2 px-4">{problem.acceptance}%</td>
+      <tr
+         onClick={() => {
+            navigate(problemLink);
+         }}
+         key={problem.id}
+         className="hover:bg-gray-700 cursor-pointer"
+      >
+         <td className="py-2 px-4 font-semibold">{problem.id}</td>
+         <td className="py-2 px-4">{problem.name}</td>
+         <td className="py-2 px-4">{problem.category.name}</td>
          <td className={`py-2 px-4 font-semibold ${difficultyClass[problem.difficulty]}`}>{problem.difficulty}</td>
       </tr>
    );
 };
 
 export default function ProblemsPage() {
+   const handleHttpError = useHttpErrorHandler();
+   const [loading, setLoading] = useState(true);
+   const [categories, setCategories] = useState<string[]>([]);
+   const [problems, setProblems] = useState<Problem[]>([]);
+
    const [filterDifficulty, setFilterDifficulty] = useState<string>('All');
-   const [filterAcceptanceRange, setFilterAcceptanceRange] = useState<string>('All');
+   const [filterId, setFilterId] = useState<string>('');
+   const [filterCategory, setFilterCategory] = useState<string[]>([]);
 
    const filteredProblems = problems.filter((problem) => {
       const matchDifficulty = filterDifficulty === 'All' || problem.difficulty === filterDifficulty;
-
-      const [minAcceptance, maxAcceptance] = filterAcceptanceRange.split('-').map(Number);
-      const matchAcceptance = filterAcceptanceRange === 'All' || (problem.acceptance >= minAcceptance && problem.acceptance <= maxAcceptance);
-
-      return matchDifficulty && matchAcceptance;
+      const matchId = problem.id.toString().toLowerCase().includes(filterId.toLowerCase());
+      const matchCategories = filterCategory.includes(problem.category.name);
+      return matchDifficulty && matchId && matchCategories;
    });
 
+   useEffect(() => {
+      http
+         .get('/problems/categories/')
+         .then((response) => {
+            setCategories((response.data as Category[]).map((e) => e.name));
+            setFilterCategory((response.data as Category[]).map((e) => e.name));
+         })
+         .catch(handleHttpError);
+      http
+         .get('/problems/')
+         .then((response) => {
+            setProblems(response.data as Problem[]);
+         })
+         .catch(handleHttpError);
+   }, []);
+   useEffect(() => {
+      if (problems.length > 0 && categories.length > 0) setLoading(false);
+   }, [problems, categories]);
+   if (loading)
+      return (
+         <Layout>
+            <div className="bg-gray-900 w-full h-full flex justify-center items-center text-xl text-white font-semibold">Loading...</div>
+         </Layout>
+      );
    return (
       <Layout>
-         <div className="bg-gray-900 text-white min-h-screen p-6">
-            {/* Study Plan Section */}
-            <section className="mt-6">
-               <h2 className="text-xl font-semibold mb-4">Study Plan</h2>
-               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                  {['Top Interview 150', 'LeetCode 75', 'SQL 50'].map((title) => (
-                     <div key={title} className="bg-gray-800 p-4 rounded-lg hover:shadow-lg">
-                        <h3 className="font-bold text-lg">{title}</h3>
-                        <p className="text-sm text-gray-400">Ace Coding Interview</p>
-                     </div>
-                  ))}
-               </div>
-            </section>
-
+         <div className="bg-gray-900 text-white py-8 px-14">
             {/* Topics Section */}
-            <section className="mt-6">
+            <section className="">
                <h2 className="text-xl font-semibold mb-4">Topics</h2>
                <div className="flex flex-wrap gap-4">
-                  {['Arrays', 'Strings', 'Hash Tables', 'Algorithms'].map((topic) => (
-                     <button key={topic} className="bg-gray-800 text-white px-4 py-2 rounded-md hover:bg-yellow-400 hover:text-black">
+                  {categories.map((topic) => (
+                     <button
+                        key={topic}
+                        onClick={() => {
+                           if (filterCategory.includes(topic)) setFilterCategory((arr) => arr.filter((e) => e !== topic));
+                           else setFilterCategory((arr) => [...arr, topic]);
+                        }}
+                        className={
+                           (filterCategory.includes(topic) ? 'bg-yellow-400 text-black hover:bg-yellow-600 hover:text-black ' : 'bg-gray-800 text-white hover:bg-yellow-400 hover:text-black ') +
+                           'px-4 py-2 rounded-md'
+                        }
+                     >
                         {topic}
                      </button>
                   ))}
@@ -123,35 +120,29 @@ export default function ProblemsPage() {
                      <option value="Hard">Hard</option>
                   </select>
                </div>
-
-               <div className="flex items-center">
-                  <label className="mr-2 text-gray-400">Acceptance Range:</label>
-                  <select value={filterAcceptanceRange} onChange={(e) => setFilterAcceptanceRange(e.target.value)} className="bg-gray-800 text-white px-4 py-2 rounded-md">
-                     <option value="All">All</option>
-                     <option value="0-10">0% - 10%</option>
-                     <option value="10-20">10% - 20%</option>
-                     <option value="20-30">20% - 30%</option>
-                     <option value="30-40">30% - 40%</option>
-                     <option value="40-50">40% - 50%</option>
-                     <option value="50-60">50% - 60%</option>
-                     <option value="60-70">60% - 70%</option>
-                     <option value="70-80">70% - 80%</option>
-                     <option value="80-100">80% - 100%</option>
-                  </select>
+               <div className="flew items-center">
+                  <label className="mr-2 text-gray-400">Number:</label>
+                  <input
+                     className="bg-gray-800 text-white px-4 py-2 rounded-md max-w-[130px]"
+                     type="text"
+                     value={filterId}
+                     onChange={(e) => {
+                        setFilterId(e.currentTarget.value);
+                     }}
+                  />
                </div>
             </section>
 
             {/* Problems Table Section */}
-            <section className="mt-6">
-               <h2 className="text-xl font-semibold mb-4">Problems List</h2>
-               <div className="overflow-x-auto">
+            <section className="mt-6 container max-w-screen-md">
+               {/* <h2 className="text-xl font-semibold mb-4">Problems Set</h2> */}
+               <div className="overflow-x-auto mx-auto">
                   <table className="min-w-full bg-gray-800 border border-gray-700 rounded-lg">
                      <thead>
                         <tr>
                            <th className="text-left py-2 px-4 border-b border-gray-700">#</th>
-                           <th className="text-left py-2 px-4 border-b border-gray-700">Title</th>
-                           <th className="text-left py-2 px-4 border-b border-gray-700">Solution</th>
-                           <th className="text-left py-2 px-4 border-b border-gray-700">Acceptance</th>
+                           <th className="text-left py-2 px-4 border-b border-gray-700">Name</th>
+                           <th className="text-left py-2 px-4 border-b border-gray-700">Topic</th>
                            <th className="text-left py-2 px-4 border-b border-gray-700">Difficulty</th>
                         </tr>
                      </thead>

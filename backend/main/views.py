@@ -1,54 +1,85 @@
 import logging
-from django.db import IntegrityError
-from rest_framework.decorators import api_view, authentication_classes, permission_classes
-from rest_framework.authentication import SessionAuthentication, TokenAuthentication
+from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import generics
 
-from .models import Problem
+from .models import Problem, ProblemCategory, TestCase
+from .permissions import IsAuthorOrReadOnly, IsAnyAuthorOrReadOnly
+from .serializers import ProblemSerializer, ProblemCategroySerializer, TestCaseSerializer
 
 logger = logging.getLogger(__name__)
 
 
-@api_view(['POST'])
-@authentication_classes([SessionAuthentication, TokenAuthentication])
-@permission_classes([IsAuthenticated])
-def create_problem(request):
-    try:
-        name = request.data['name']
-        description = request.data['description']
-        example = request.data['example']
-        function_description = request.data['functionDescription']
-        input_format = request.data['inputFormat']
-        output_format = request.data['outputFormat']
-        sample_input = request.data['sampleInput']
-        sample_output = request.data['sampleOutput']
-        explanation = request.data['explanation']
-        difficulty = request.data['difficulty']
-    except Exception as e:
-        logger.debug(e)
-        return Response("400_BAD_REQUEST", status=status.HTTP_400_BAD_REQUEST)
+class TestCaseListCreate(generics.ListCreateAPIView):
+    serializer_class = TestCaseSerializer
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
+    pagination_class = None
 
-    try:
-        author = request.user
-        problem = Problem.objects.create(
-            name=name,
-            description=description,
-            example=example,
-            function_description=function_description,
-            input_format=input_format,
-            output_format=output_format,
-            sample_input=sample_input,
-            sample_output=sample_output,
-            explanation=explanation,
-            difficulty=difficulty,
-            author=author
-        )
-        return Response({
-            "message": "Problem created successfully",
-            "id": problem.id
-        }, status=status.HTTP_201_CREATED)
-    except Exception as e:
-        logger.debug(e)
-        return Response("INTERNAL_SERVER_ERROR", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    def get_queryset(self):
+        problem_id = self.kwargs.get('problem_id')
+        return TestCase.objects.filter(problem_id=problem_id)
+
+    def perform_create(self, serializer):
+        problem_id = self.kwargs.get('problem_id')
+        serializer.save(problem_id=problem_id)
+
+
+class TestCaseGetUpdateDelete(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = TestCaseSerializer
+    permission_classes = [IsAuthenticated]  # TODO protect against not authorized users trying to update/delete
+    authentication_classes = [TokenAuthentication]
+
+    def get_queryset(self):
+        problem_id = self.kwargs.get('problem_id')
+        return TestCase.objects.filter(problem_id=problem_id)
+
+    def perform_update(self, serializer):
+        problem_id = self.kwargs.get('problem_id')
+        serializer.save(problem_id=problem_id)
+
+
+class ProblemCategoryList(generics.ListAPIView):
+    queryset = ProblemCategory.objects.all()
+    serializer_class = ProblemCategroySerializer
+    permission_classes = [IsAuthenticated, IsAnyAuthorOrReadOnly]
+    authentication_classes = [TokenAuthentication]
+    pagination_class = None
+
+
+class ProblemList(generics.ListAPIView):
+    queryset = Problem.objects.all()
+    serializer_class = ProblemSerializer
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
+    pagination_class = None
+
+
+class ProblemGet(generics.RetrieveAPIView):
+    queryset = Problem.objects.all()
+    serializer_class = ProblemSerializer
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
+    pagination_class = None
+
+
+class AuthorProblemListCreate(generics.ListCreateAPIView):
+    serializer_class = ProblemSerializer
+    permission_classes = [IsAuthenticated, IsAuthorOrReadOnly]
+    authentication_classes = [TokenAuthentication]
+    pagination_class = None
+
+    def get_queryset(self):
+        return Problem.objects.filter(author=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
+
+
+class AuthorProblemGetUpdateDelete(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = ProblemSerializer
+    permission_classes = [IsAuthenticated, IsAuthorOrReadOnly]
+    authentication_classes = [TokenAuthentication]
+
+    def get_queryset(self):
+        return Problem.objects.filter(author=self.request.user)

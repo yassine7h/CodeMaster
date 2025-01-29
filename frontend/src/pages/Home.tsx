@@ -1,6 +1,5 @@
 import { useNavigate } from 'react-router-dom';
 import { useGlobalContext } from '../contexts/GlobalContext';
-import { http } from '../utils/HttpClient';
 import Layout from '../layouts/Layout';
 
 export default function Home() {
@@ -59,26 +58,6 @@ export default function Home() {
                      <p className="text-gray-100">Practice with our integrated online compiler.</p>
                   </div>
                </div>
-            </div>
-
-            {/* Debug Section */}
-            <div className="flex gap-20 mx-10 py-10 bg-white justify-around items-start">
-               <pre className="text-sm">{'USER=' + JSON.stringify(value.user, null, 2)}</pre>
-               <button
-                  className="bg-blue-500 text-white px-4 py-2 rounded-md"
-                  onClick={() => {
-                     http
-                        .get('/test_token')
-                        .then((response: any) => {
-                           console.log('test_token:', response.data);
-                        })
-                        .catch((error) => {
-                           console.error('Error:', error);
-                        });
-                  }}
-               >
-                  Test Api Call
-               </button>
             </div>
          </div>
       </Layout>

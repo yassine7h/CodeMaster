@@ -49,7 +49,7 @@ const router = createBrowserRouter([
       element: <ProtectedRoute roles={['ADMIN', 'CREATOR', 'LEARNER']} component={ProblemsPage} />,
    },
    {
-      path: '/problems/:problemId',
+      path: '/problems/:id',
       element: <ProtectedRoute roles={['ADMIN', 'CREATOR', 'LEARNER']} component={ProblemCodingPage} />,
    },
    {

@@ -22,9 +22,9 @@ dist-ssr
 .idea/
 backend/.venv
 backend/executor/__pycache__/
-backend/executor/migrations/
+#backend/executor/migrations/
 backend/test_cases_runner/_pycache__/
 backend/test_cases_runner/migrations/
 backend/main/_pycache__/
-backend/main/migrations/
+#backend/main/migrations/
 backend/media

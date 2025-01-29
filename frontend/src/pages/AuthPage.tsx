@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { Role } from '../ProtectedRoute';
 import { AxiosResponse } from 'axios';
 import Layout from '../layouts/Layout';
+import { djangoAdminAuth } from '../utils/DjangoAdminAuth';
 
 interface LoginFormInputs {
    email: string;
@@ -29,21 +30,21 @@ export default function AuthPage({ isLogin }: { isLogin: boolean }) {
 
    const [showMessage, setShowMessage] = useState(false);
    const [message, setMessage] = useState('');
+   const [isLoading, setIsLoading] = useState(false);
 
    const {
       register,
       handleSubmit,
+      watch,
       formState: { errors },
    } = useForm<AuthFormInputs>();
 
    const onSubmit: SubmitHandler<AuthFormInputs> = (data: AuthFormInputs) => {
       if (isLogin) {
          const formdata: LoginFormInputs = { email: data.email, password: data.password };
-         console.log(formdata);
          http.post('/accounts/signin', formdata).then(handleAuth).catch(handleHttpError);
       } else {
          const formdata: SignupFormInputs = { ...data, roles: [data.roles as any] as Role[] };
-         console.log(formdata);
          http.post('/accounts/signup', formdata).then(handleAuth).catch(handleHttpError);
       }
    };
@@ -56,15 +57,31 @@ export default function AuthPage({ isLogin }: { isLogin: boolean }) {
          return;
       }
       const user: User = data.user;
+      const isAdmin = user.roles.includes('ADMIN');
       const isLearner = user.roles.includes('LEARNER');
       const isCreator = user.roles.includes('CREATOR');
       http.setToken(data.token);
       setUser(user);
 
-      if (isLearner) navigate('/');
-      else if (isCreator) navigate('/');
+      if (isAdmin) {
+         setIsLoading(true);
+         djangoAdminAuth
+            .login(user.username, watch('password'))
+            .then(() => {
+               navigate('/admin/dashboard');
+            })
+            .finally(() => {
+               setIsLoading(false);
+            });
+      } else if (isCreator) navigate('/creator/dashboard');
+      else if (isLearner) navigate('/');
    };
-
+   if (isLoading)
+      return (
+         <Layout>
+            <div className="w-full h-full flex justify-center items-center text-xl text-white font-semibold">Loading...</div>
+         </Layout>
+      );
    return (
       <Layout>
          <div className="w-full h-full flex justify-center items-center bg-gray-900">

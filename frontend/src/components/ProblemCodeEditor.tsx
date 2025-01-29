@@ -30,7 +30,7 @@ print(res)
 }`,
 };
 
-export default function ProblemCodeEditor() {
+export default function ProblemCodeEditor({ problemId }: { problemId: number }) {
    const [codeValue, setCodeValue] = React.useState<string>(defaultValues.python);
    const [language, setLanguage] = React.useState<Language>('python');
    const [testsResults, setTestsResults] = React.useState<any[]>([]);
@@ -46,7 +46,7 @@ export default function ProblemCodeEditor() {
       setTestsResults([]);
       setMessage('Running test cases...');
       http
-         .post('run_test_cases/' + language, { code: codeValue })
+         .post('run_test_cases/' + language, { code: codeValue, problemId: problemId })
          .then((response: any) => {
             const testResults = response.data || [];
             console.log('Test Results:', testResults);
@@ -69,7 +69,7 @@ export default function ProblemCodeEditor() {
                      <option value="java">Java 17</option>
                      <option value="python">Python 3.9</option>
                   </select>
-                  <button onClick={runCode} className="bg-black hover:bg-blue-500 px-3 py-1 rounded-lg text-white font-semibold flex items-center justify-center">
+                  <button onClick={runCode} className="bg-blue-500  hover:bg-blue-600 px-3 py-1 rounded-lg text-white font-semibold flex items-center justify-center">
                      Run
                   </button>
                </div>

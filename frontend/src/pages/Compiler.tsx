@@ -9,7 +9,7 @@ type Language = 'python' | 'java';
 const Compiler: React.FC = () => {
    const handleHttpError = useHttpErrorHandler();
 
-   const [codeValue, setCodeValue] = React.useState<string>('// Write your code here');
+   const [codeValue, setCodeValue] = React.useState<string>('# Write your code here');
    const [language, setLanguage] = React.useState<Language>('python');
    const [message, setMessage] = React.useState<String>('No output yet');
    const [stdout, setStdout] = React.useState<String>();

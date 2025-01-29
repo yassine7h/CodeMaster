@@ -1,5 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import useLogout from '../hooks/logoutHandler';
+import useImageStatus from '../hooks/imageStatus';
 import { useState, useEffect, useRef } from 'react';
 import { BsPersonCircle } from 'react-icons/bs';
 import { useGlobalContext } from '../contexts/GlobalContext';
@@ -10,6 +11,7 @@ import { ImStatsDots } from 'react-icons/im';
 
 export default function Layout({ children }: React.PropsWithChildren<{}>) {
    const { value } = useGlobalContext();
+   const avatarLoadingStatus = useImageStatus(API_BASE_URL + value?.user?.avatar);
    const navigate = useNavigate();
    const logout = useLogout();
    const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -82,10 +84,10 @@ export default function Layout({ children }: React.PropsWithChildren<{}>) {
                {value.user ? (
                   <div ref={dropdownRef} className="relative">
                      <button onClick={toggleDropdown} className={(dropdownOpen ? 'ring-2 ' : '') + 'flex items-center justify-center hover:ring-2 ring-blue-500 rounded-full'}>
-                        {value.user.avatar ? <img src={API_BASE_URL + value.user.avatar} className="w-8 aspect-square rounded-full bg-white" /> : <BsPersonCircle size={33} />}
+                        {avatarLoadingStatus === 'loaded' ? <img src={API_BASE_URL + value.user.avatar} className="w-8 aspect-square rounded-full bg-white" /> : <BsPersonCircle size={33} />}
                      </button>
                      {dropdownOpen && (
-                        <div className="absolute min-w-[180px] right-0 mt-2 bg-white text-black shadow-lg rounded-md py-2 z-50">
+                        <div className="absolute min-w-[180px] right-0 mt-6 bg-white text-black shadow-lg rounded-md py-2 z-50">
                            <Link to="/myaccount" className="flex items-center gap-2 w-full text-left px-4 py-2 hover:bg-gray-100">
                               <MdOutlineManageAccounts size={20} />
                               <p>My Account</p>
