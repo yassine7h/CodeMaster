@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from subprocess import run, CalledProcessError
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 import ast
+from main.docker_utils import launch_container
 
 from main.models import TestCase
 
@@ -59,9 +60,8 @@ def run_test_cases_java(request):
 
 
 def run_test_cases(container_name, code, tests_inputs, expected_results):
-    command = ["docker", "run", "--rm", container_name, code, ";".join(tests_inputs)]
-    command_output = run(command, check=True, capture_output=True, text=True)
-    formatted_command_output = ast.literal_eval(command_output.stdout)
+    command_output = launch_container(container_name, [code, ";".join(tests_inputs)], rm=True)
+    formatted_command_output = ast.literal_eval(command_output)
     test_results = formatted_command_output['test_results']
     logger.debug(formatted_command_output)
     tests_res = []

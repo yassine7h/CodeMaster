@@ -1,4 +1,4 @@
-backend/db.sqlite3
+db.sqlite3
 logs
 *.log
 npm-debug.log*
@@ -24,7 +24,10 @@ dist-ssr
 *.sw?
 
 # added by me
-.venv
+.venv/
 __pycache__/
+*/__pycache__/
+*/migrations/
+media/
 
 
