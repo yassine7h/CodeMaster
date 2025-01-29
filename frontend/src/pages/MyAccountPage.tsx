@@ -93,11 +93,21 @@ const AccountPage = () => {
                      <div className="space-y-4 flex-1">
                         <div>
                            <label className="block text-sm font-medium text-gray-400 mb-1">Username</label>
-                           <input type="text" value={userData.username} disabled className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50" />
+                           <input
+                              type="text"
+                              value={userData.username}
+                              disabled
+                              className="cursor-not-allowed text-sm w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                           />
                         </div>
                         <div>
                            <label className="block text-sm font-medium text-gray-400 mb-1">Email</label>
-                           <input type="email" value={userData.email} disabled className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50" />
+                           <input
+                              type="email"
+                              value={userData.email}
+                              disabled
+                              className="cursor-not-allowed text-sm w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                           />
                         </div>
                      </div>
                   </div>
@@ -112,7 +122,7 @@ const AccountPage = () => {
                         <input
                            type="password"
                            {...register('current', { required: 'Current password is required' })}
-                           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                           className="text-sm w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
                         {errors.current && <p className="mt-1 text-sm text-red-400">{errors.current.message}</p>}
                      </div>
@@ -121,7 +131,7 @@ const AccountPage = () => {
                         <input
                            type="password"
                            {...register('new', { required: 'New password is required' })}
-                           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                           className="text-sm w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
                         {errors.new && <p className="mt-1 text-sm text-red-400">{errors.new.message}</p>}
                      </div>
@@ -130,7 +140,7 @@ const AccountPage = () => {
                         <input
                            type="password"
                            {...register('confirm', { required: 'Please confirm your password', validate: (value) => value === watch('new') || 'Passwords do not match' })}
-                           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                           className="text-sm w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
                         {errors.confirm && <p className="mt-1 text-sm text-red-400">{errors.confirm.message}</p>}
                      </div>

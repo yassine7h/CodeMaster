@@ -9,7 +9,7 @@ const TestsResults = ({ testResults, message }: { testResults: any[]; message: s
 
    return (
       <div className="w-full h-full bg-gray-800 text-white">
-         <div className="font-semibold bg-gray-900 w-full px-3 py-2">Tests Results</div>
+         <div className="font-semibold bg-gray-900 w-full px-3 py-2 border-b-2 border-black">Tests Results</div>
          <div className="w-full h-full p-4 overflow-x-scroll">
             {testResults.length > 0 ? (
                testResults.map((test, index) => (

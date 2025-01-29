@@ -35,8 +35,9 @@ def signup(request):
             user.is_active = False
             user.save()
             return Response({
-                'message': "Your account has been created but is not yet activated. "
-                           "Please wait for the administration to review your request."
+                'message': "Your account has been created but requires a CREATOR role,"
+                           " and therefore it is not yet activated.\n"
+                           " Please wait for the administration to review your request."
             })
 
         user.save()

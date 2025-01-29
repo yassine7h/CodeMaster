@@ -28,7 +28,7 @@ export default function AuthPage({ isLogin }: { isLogin: boolean }) {
    const { setUser } = useGlobalContext();
    const navigate = useNavigate();
 
-   const [showMessage, setShowMessage] = useState(false);
+   const [showMessage, setShowMessage] = useState(true);
    const [message, setMessage] = useState('');
    const [isLoading, setIsLoading] = useState(false);
 
@@ -93,7 +93,7 @@ export default function AuthPage({ isLogin }: { isLogin: boolean }) {
                      <input
                         type="email"
                         {...register('email', { required: 'Email is required' })}
-                        className="w-full mt-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full mt-1 px-3 py-2  bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                      />
                      {errors.email && <p className="text-red-400 text-sm mt-1">{errors.email.message}</p>}
                   </div>
@@ -103,7 +103,7 @@ export default function AuthPage({ isLogin }: { isLogin: boolean }) {
                         <input
                            type="text"
                            {...register('username', { required: 'Username is required' })}
-                           className="w-full mt-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                           className="w-full mt-1 px-3 py-2  bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
                         {errors.username && <p className="text-red-400 text-sm mt-1">{errors.username.message}</p>}
                      </div>
@@ -115,14 +115,14 @@ export default function AuthPage({ isLogin }: { isLogin: boolean }) {
                         {...register('password', {
                            required: isLogin ? 'Password is required' : undefined,
                         })}
-                        className="w-full mt-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full mt-1 px-3 py-2  bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                      />
                      {errors.password && <p className="text-red-400 text-sm mt-1">{errors.password.message}</p>}
                   </div>
                   {!isLogin && (
                      <div className="w-full">
                         <label className="block text-sm font-medium text-gray-400">You are</label>
-                        <div className="mt-1 flex ring-2 ring-gray-400 rounded px-4 py-3 space-x-4 text-gray-400 text-sm w-full justify-around">
+                        <div className="bg-gray-700 border border-gray-600 mt-1 flex rounded-md px-4 py-3 space-x-4 text-white text-sm w-full justify-around">
                            <label className="flex items-center">
                               <input type="radio" value="LEARNER" {...register('roles', { required: 'A role selection is required' })} className="mr-2 accent-blue-500" />
                               Learner
@@ -155,15 +155,15 @@ export default function AuthPage({ isLogin }: { isLogin: boolean }) {
             </div>
             {showMessage && (
                <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-                  <div className="bg-white p-6 rounded-md shadow-lg w-[500px]">
-                     <h2 className="text-xl font-bold mb-4">Message</h2>
-                     <div>{message}</div>
+                  <div className="bg-gray-800 p-6 rounded-md shadow-lg w-[500px]">
+                     <h2 className="text-xl text-white font-bold mb-4">Message</h2>
+                     <div className="text-white whitespace-pre-wrap">{message}</div>
                      <div className="mt-4 flex justify-end">
                         <button
                            onClick={() => {
                               setShowMessage(false);
                            }}
-                           className="mr-4 px-4 py-2 bg-green-400 hover:bg-green-500 rounded-md"
+                           className="text-white font-semibold px-4 py-2 bg-blue-500 hover:bg-blue-600 rounded-md"
                         >
                            Ok
                         </button>

@@ -81,8 +81,8 @@ export default function ProblemCodingPage() {
             </div>
 
             <div className="flex flex-col w-full max-h-full row-span-1 col-span-1 bg-gray-900">
-               <div className="w-full flex justify-between items-end bg-gray-800 py-3 px-4 border-black">
-                  <h2 className="border-2 border-white px-3 text-lg font-semibold text-white">{`${problem.name}`}</h2>
+               <div className="w-full flex justify-between items-end bg-gray-800 py-3 px-4 border-b-2 border-black">
+                  <h2 className="border-2 rounded border-white px-3 text-lg font-semibold text-white">{`${problem.name}`}</h2>
                   <div className="flex gap-4">
                      <div className="px-2 py-1 font-semibold rounded-md text-yellow-400">{problem.category.name}</div>
                      <div className={'px-2 py-1 font-semibold rounded-md ' + difficultyClass[problem.difficulty]}>{problem.difficulty}</div>

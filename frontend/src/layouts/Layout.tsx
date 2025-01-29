@@ -87,18 +87,18 @@ export default function Layout({ children }: React.PropsWithChildren<{}>) {
                         {avatarLoadingStatus === 'loaded' ? <img src={API_BASE_URL + value.user.avatar} className="w-8 aspect-square rounded-full bg-white" /> : <BsPersonCircle size={33} />}
                      </button>
                      {dropdownOpen && (
-                        <div className="absolute min-w-[180px] right-0 mt-6 bg-white text-black shadow-lg rounded-md py-2 z-50">
-                           <Link to="/myaccount" className="flex items-center gap-2 w-full text-left px-4 py-2 hover:bg-gray-100">
+                        <div className="absolute min-w-[180px] right-0 mt-[19px] bg-gray-900 text-whit border-gray-600 border-2 rounded-md py-2 z-50">
+                           <Link to="/myaccount" className="flex items-center gap-2 w-full text-left px-4 py-2 hover:bg-gray-800">
                               <MdOutlineManageAccounts size={20} />
                               <p>My Account</p>
                            </Link>
                            {role.isLearner && (
-                              <Link to="/mystats" className="flex items-center gap-2 w-full text-left px-4 py-2 hover:bg-gray-100">
+                              <Link to="/mystats" className="flex items-center gap-2 w-full text-left px-4 py-2 hover:bg-gray-800">
                                  <ImStatsDots size={18} />
                                  <p>My Stats</p>
                               </Link>
                            )}
-                           <button type="button" onClick={logout} className="flex items-center gap-2 w-full text-left px-4 py-2 hover:bg-gray-100">
+                           <button type="button" onClick={logout} className="flex items-center gap-2 w-full text-left px-4 py-2 hover:bg-gray-800">
                               <BiLogOut size={20} />
                               <p>Logout</p>
                            </button>

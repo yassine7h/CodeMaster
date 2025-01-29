@@ -67,7 +67,7 @@ const Compiler: React.FC = () => {
                         <option value="python">Python 3.9</option>
                      </select>
                   </div>
-                  <button onClick={run} className="bg-black text-white font-semibold rounded-md px-4 py-2 hover:bg-blue-500">
+                  <button onClick={run} className="bg-blue-500 text-white font-semibold rounded-md px-4 py-2 hover:bg-blue-600">
                      Run
                   </button>
                </div>
